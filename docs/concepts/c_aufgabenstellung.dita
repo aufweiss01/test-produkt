@@ -1,39 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE concept PUBLIC "-//OASIS//DTD DITA Concept//EN" "concept.dtd">
-<!-- DOCTYPE: Deklariert den Dokumenttyp als DITA-Concept.
-     Concept-Topics beschreiben "Was ist X?" – im Unterschied zu Task ("Wie mache ich X?") -->
 
 <concept id="c_aufgabenstellung" xml:lang="de-DE">
-<!-- id: Eindeutige ID des Topics. Wird für conref-Referenzen benötigt.
-        Konvention: Dateiname ohne Erweiterung -->
+<!-- Hinweis: Bei Titeländerung Dateinamen und alle Referenzen auf diese Datei anpassen -->
 
   <title>Aufgabenstellung</title>
 
   <conbody>
-  <!-- conbody: Pflicht-Container für den Inhalt eines Concept-Topics -->
 
-    <p>Eine Schnittstellenbeschreibung dokumentiert die <term>Navigationsschnittstelle</term>
-    zwischen dem Operationsmikroskop <ph keyref="produktname_opmi"/> von
-    <ph keyref="hersteller_opmi"/> und dem Navigationsgerät
-    <ph keyref="produktname_navi"/> von <ph keyref="hersteller_navi"/>.</p>
-    <!-- ph keyref="...": Fügt den Wert der Variable ein, die in reusable_product_names.ditamap
-         definiert ist. Der Key muss in der Haupt-Map per mapref eingebunden sein. -->
+    <p>Eine <term>Schnittstellenbeschreibung</term> dokumentiert die
+    <term>Navigationsschnittstelle</term> zwischen dem
+    <term>Operationsmikroskop</term> <ph keyref="produktname"/> von
+    <ph keyref="hersteller"/> und dem <term>Navigationsgerät</term>
+    <ph keyref="navi"/> von <ph keyref="navi_hersteller"/>.</p>
 
-    <p>Ziel der Dokumentation ist es, die <term>Navigationsschnittstelle</term> vollständig
-    und präzise zu beschreiben, sodass eine fehlerfreie Integration beider Geräte
-    gewährleistet ist.</p>
+    <p>Ziel der Dokumentation ist es, die <term>Navigationsschnittstelle</term>
+    vollständig und präzise zu beschreiben, sodass eine fehlerfreie Integration
+    beider Geräte gewährleistet ist.</p>
 
     <section>
       <title>Schnittstellentypen</title>
-      <p>Die <term>Navigationsschnittstelle</term> umfasst zwei partitive Komponenten:</p>
+      <p>Die <term>Navigationsschnittstelle</term> umfasst zwei partitive
+      Komponenten:</p>
       <ul>
         <li>Die <term>mechanische Schnittstelle</term></li>
         <li>Die <term>Softwareschnittstelle</term></li>
       </ul>
-      <!-- term: Markiert einen Fachbegriff. Ermöglicht spätere Terminologiekontrolle.
-           Vorzugsbenennungen laut Terminologievorgabe:
-           "Navigationsschnittstelle" (nicht "Interface")
-           "Operationsmikroskop" (nicht "Opmi") -->
     </section>
 
   </conbody>

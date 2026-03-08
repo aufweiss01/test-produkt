@@ -11,21 +11,21 @@
     <context>
       <p>Für die Dokumentation der <term>Navigationsschnittstelle</term> recherchieren
       Sie alle relevanten technischen Unterlagen von
-      <ph keyref="hersteller_opmi"/> und <ph keyref="hersteller_navi"/>.</p>
+      <ph keyref="hersteller"/> und <ph keyref="navi_hersteller"/>.</p>
     </context>
 
     <steps>
 
       <step>
         <cmd>Fordern Sie die technischen Spezifikationen des
-        <term>Operationsmikroskops</term> <ph keyref="produktname_opmi"/> bei
-        <ph keyref="hersteller_opmi"/> an.</cmd>
+        <term>Operationsmikroskops</term> <ph keyref="produktname"/> bei
+        <ph keyref="hersteller"/> an.</cmd>
       </step>
 
       <step>
         <cmd>Fordern Sie die technischen Spezifikationen des
-        <term>Navigationsgeräts</term> <ph keyref="produktname_navi"/> bei
-        <ph keyref="hersteller_navi"/> an.</cmd>
+        <term>Navigationsgeräts</term> <ph keyref="navi"/> bei
+        <ph keyref="navi_hersteller"/> an.</cmd>
       </step>
 
       <step>
@@ -35,15 +35,11 @@
 
       <step>
         <cmd>Besuchen Sie die Website des Herstellers
-        <ph keyref="hersteller_navi"/> für weiterführende
+        <ph keyref="navi_hersteller"/> für weiterführende
         technische Unterlagen.</cmd>
         <info>
           <xref keyref="link_hersteller_navi" format="html" scope="external">
-          <!-- xref keyref: Referenziert einen externen Link über den Key aus
-               external_links.ditamap – nie direkt per href auf die URL.
-               format="html": Ziel ist eine Webseite.
-               scope="external": Pflichtangabe für Links außerhalb des Projekts -->
-            Website <ph keyref="hersteller_navi"/>
+            Website <ph keyref="navi_hersteller"/>
           </xref>
         </info>
       </step>
