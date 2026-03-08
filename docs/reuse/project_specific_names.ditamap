@@ -1,14 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE map PUBLIC "-//OASIS//DTD DITA Map//EN" "map.dtd">
-<map>
-  <title>Produktnamen und Variablen (Keys)</title>
+<map xml:lang="de-DE">
+
+  <title>Projektspezifische Namen</title>
+
   <keydef keys="produktname">
-    <topicmeta><linktext>Produktname XYZ</linktext></topicmeta>
+    <topicmeta>
+      <keywords>
+        <keyword>OptiScope X200</keyword>
+        <!-- Hauptprodukt dieser Dokumentation; projektspezifische Ausprägung.
+             Referenziert aus: allen Topics dieser Dokumentation -->
+      </keywords>
+    </topicmeta>
   </keydef>
-  <keydef keys="version">
-    <topicmeta><linktext>1.0</linktext></topicmeta>
+
+  <keydef keys="navi">
+    <topicmeta>
+      <keywords>
+        <keyword>NaviGuide 3000</keyword>
+        <!-- Externes Navigationsgerät; nur für diese Dokumentation relevant.
+             Referenziert aus: Topics, die das Navigationsgerät nennen -->
+      </keywords>
+    </topicmeta>
   </keydef>
-  <keydef keys="firmenname">
-    <topicmeta><linktext>Kundenname GmbH</linktext></topicmeta>
+
+  <keydef keys="navi_hersteller">
+    <topicmeta>
+      <keywords>
+        <keyword>SurgicalNav AG</keyword>
+        <!-- Hersteller des Navigationsgeräts; nur für diese Dokumentation relevant.
+             Referenziert aus: Topics, die den Navi-Hersteller nennen -->
+      </keywords>
+    </topicmeta>
   </keydef>
+
 </map>
