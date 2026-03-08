@@ -4,7 +4,10 @@
 
   <title>Schnittstellenbeschreibung – Ein Arbeitsbeispiel</title>
 
-  <!-- Reuse-Ressourcen (Variablen, Keys) – wird in Schritt 2 ergänzt -->
+  <!-- mapref: Bindet eine externe Map ein und macht deren Keys in dieser Map verfügbar.
+       Der Pfad ist relativ zur Haupt-Map.
+       format="ditamap": Pflichtangabe bei mapref auf .ditamap-Dateien -->
+  <mapref href="../shared/reuse/reusable_product_names.ditamap" format="ditamap"/>
 
   <!-- Topics – werden in Schritt 3 ergänzt -->
 
