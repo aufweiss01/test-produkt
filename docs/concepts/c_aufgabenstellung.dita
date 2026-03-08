@@ -4,6 +4,8 @@
 <concept id="c_aufgabenstellung" xml:lang="de-DE">
 <!-- Hinweis: Bei Titeländerung Dateinamen und alle Referenzen auf diese Datei anpassen -->
 
+  <title>Aufgabenstellung</title>
+
   <prolog>
   <!-- prolog: Enthält Metadaten zum Topic; wird nicht in der Ausgabe angezeigt,
        aber von DITA-OT und dem Python-Skript (STATUS.html) ausgewertet -->
@@ -43,8 +45,6 @@
     </critdates>
 
   </prolog>
-
-  <title>Aufgabenstellung</title>
 
   <conbody>
 
