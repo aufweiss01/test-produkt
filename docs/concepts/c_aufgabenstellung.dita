@@ -3,7 +3,7 @@
 <!-- DOCTYPE: Deklariert den Dokumenttyp als DITA-Concept.
      Concept-Topics beschreiben "Was ist X?" – im Unterschied zu Task ("Wie mache ich X?") -->
 
-<concept id="concept_aufgabenstellung" xml:lang="de-DE">
+<concept id="c_aufgabenstellung" xml:lang="de-DE">
 <!-- id: Eindeutige ID des Topics. Wird für conref-Referenzen benötigt.
         Konvention: Dateiname ohne Erweiterung -->
 
