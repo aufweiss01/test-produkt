@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task id="task_beispiel">
+  <title>Beispiel-Task</title>
+  <prolog>
+    <metadata>
+      <prodinfo>
+        <prodname keyref="produktname"/>
+        <vrmlist><vrm version="1.0"/></vrmlist>
+      </prodinfo>
+      <othermeta name="doc-id" content="HB-002"/>
+      <othermeta name="doc-type" content="Handbuch"/>
+      <othermeta name="status" content="draft"/>
+      <othermeta name="assignee" content=""/>
+    </metadata>
+    <author></author>
+    <critdates>
+      <created date="2026-02-23"/>
+      <revised modified="2026-02-23"/>
+    </critdates>
+  </prolog>
+  <taskbody>
+    <steps>
+      <step><cmd>Schritt 1: Beschreibung.</cmd></step>
+      <step><cmd>Schritt 2: Beschreibung.</cmd></step>
+    </steps>
+  </taskbody>
+</task>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE concept PUBLIC "-//OASIS//DTD DITA Concept//EN" "concept.dtd">
+<concept id="concept_beispiel">
+  <title>Beispiel-Concept</title>
+  <prolog>
+    <metadata>
+      <prodinfo>
+        <prodname keyref="produktname"/>
+        <vrmlist><vrm version="1.0"/></vrmlist>
+      </prodinfo>
+      <othermeta name="doc-id" content="HB-001"/>
+      <othermeta name="doc-type" content="Handbuch"/>
+      <othermeta name="status" content="draft"/>
+      <othermeta name="assignee" content=""/>
+    </metadata>
+    <author></author>
+    <critdates>
+      <created date="2026-02-23"/>
+      <revised modified="2026-02-23"/>
+    </critdates>
+  </prolog>
+  <conbody>
+    <p>Hier kommt der Inhalt des Concept-Topics.</p>
+  </conbody>
+</concept>

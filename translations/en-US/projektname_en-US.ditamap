@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE map PUBLIC "-//OASIS//DTD DITA Map//EN" "map.dtd">
+<map xml:lang="en-US">
+  <title>Projektname (en-US)</title>
+  <mapref href="../../shared/reuse/reusables.ditamap" format="ditamap"/>
+  <mapref href="reuse/reusables.ditamap" format="ditamap"/>
+  <!-- Topics in dieser Sprache hier eintragen -->
+  <!-- <topicref href="topics/concept_beispiel.dita"/> -->
+</map>

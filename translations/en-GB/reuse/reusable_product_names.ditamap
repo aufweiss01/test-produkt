@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE map PUBLIC "-//OASIS//DTD DITA Map//EN" "map.dtd">
+<map>
+  <title>Produktnamen und Variablen - en-GB</title>
+  <keydef keys="produktname">
+    <topicmeta><linktext>Product Name XYZ</linktext></topicmeta>
+  </keydef>
+  <keydef keys="version">
+    <topicmeta><linktext>1.0</linktext></topicmeta>
+  </keydef>
+  <keydef keys="firmenname">
+    <topicmeta><linktext>Customer Name GmbH</linktext></topicmeta>
+  </keydef>
+</map>
