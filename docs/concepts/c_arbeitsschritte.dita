@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE concept PUBLIC "-//OASIS//DTD DITA Concept//EN" "concept.dtd">
+
+<concept id="c_arbeitsschritte" xml:lang="de-DE">
+<!-- Hinweis: Bei Titeländerung Dateinamen und alle Referenzen auf diese Datei anpassen -->
+
+  <title>Arbeitsschritte</title>
+  <!-- Dieses Topic dient ausschließlich als Kapitelcontainer.
+       Es enthält keinen eigenen Inhalt, sondern gruppiert die Task-Topics
+       als Unterkapitel in der Haupt-Map. -->
+
+  <conbody/>
+  <!-- conbody: Pflicht-Element; bleibt hier bewusst leer -->
+
+</concept>
