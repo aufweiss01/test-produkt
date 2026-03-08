@@ -1,23 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE map PUBLIC "-//OASIS//DTD DITA Map//EN" "map.dtd">
+
 <map xml:lang="de-DE">
 
   <title>Schnittstellenbeschreibung – Ein Arbeitsbeispiel</title>
 
-  <!-- mapref: Bindet eine externe Map ein und macht deren Keys in dieser Map verfügbar.
-       Der Pfad ist relativ zur Haupt-Map.
-       format="ditamap": Pflichtangabe bei mapref auf .ditamap-Dateien -->
-  <mapref href="../shared/reuse/reusable_product_names.ditamap" format="ditamap"/>
-  <mapref href="reuse/reusable_product_names.ditamap">
-  <mapref href="reuse/reusable_image_refs.ditamap">
+  <!-- Reuse-Ressourcen aus dem Shared-Repo -->
+  <mapref href="../shared/reuse/reusables.ditamap" format="ditamap"/>
+  <!-- mapref: Bindet alle Shared-Ressourcen ein (Variablen, Bildreferenzen, externe Links) -->
 
-  <!-- topicref: Verweist auf ein Topic. href ist relativ zur Map.
-       Die Reihenfolge der topicrefs bestimmt die Reihenfolge im Ausgabedokument. -->
+  <!-- Projektspezifische Reuse-Ressourcen -->
+  <mapref href="reuse/reusable_product_names.ditamap" format="ditamap"/>
+  <mapref href="reuse/reusable_image_refs.ditamap" format="ditamap"/>
+
+  <!-- Links -->
+  <mapref href="links/external_links.ditamap" format="ditamap"/>
+  <mapref href="links/internal_links.ditamap" format="ditamap"/>
+
+  <!-- Concepts -->
   <topicref href="concepts/c_aufgabenstellung.dita"/>
   <topicref href="concepts/c_beteiligte_geraete.dita"/>
-  <topicref href="tasks/t_analyse_aufgabenstellung.dita">
-  <topicref href="tasks/t_recherche.dita">
-  <topicref href="tasks/t_strukturierung.dita">
-  <topicref href="tasks/t_redaktionelle_umsetzung.dita">
+
+  <!-- Tasks -->
+  <topicref href="tasks/t_analyse_aufgabenstellung.dita"/>
+  <topicref href="tasks/t_recherche.dita"/>
+  <topicref href="tasks/t_strukturierung.dita"/>
+  <topicref href="tasks/t_redaktionelle_umsetzung.dita"/>
+
+  <!-- Relationship Table -->
+  <mapref href="links/relationship_table.ditamap" format="ditamap"/>
 
 </map>
