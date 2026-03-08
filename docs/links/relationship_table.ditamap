@@ -1,12 +1,58 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE map PUBLIC "-//OASIS//DTD DITA Map//EN" "map.dtd">
-<map>
+<map xml:lang="de-DE">
+
   <title>Relationship Table</title>
+
   <reltable>
+  <!-- reltable: Definiert thematische Querverweise zwischen Topics.
+       Die Verweise werden außerhalb der Topics definiert – die Topics
+       selbst bleiben dadurch unabhängig voneinander.
+       DITA-OT generiert aus der reltable automatisch "Siehe auch"-Abschnitte
+       in der Ausgabe. -->
+
     <relheader>
+    <!-- relheader: Definiert die Spalten der Tabelle nach Topic-Typ -->
       <relcolspec type="concept"/>
       <relcolspec type="task"/>
-      <relcolspec type="reference"/>
     </relheader>
+
+    <relrow>
+    <!-- relrow: Eine Zeile = eine Gruppe thematisch verwandter Topics.
+         Alle Topics in einer Zeile verweisen gegenseitig aufeinander, sofern 
+         nicht von anderslautendem Attribut @linking eingeschränkt. -->
+      <relcell>
+        <topicref href="../concepts/c_aufgabenstellung.dita"
+                  linking="targetonly"/>
+        <!-- targetonly: Wird vom Task verlinkt, verlinkt aber nicht zurück -->
+      </relcell>
+      <relcell>
+        <topicref href="../tasks/t_analyse_aufgabenstellung.dita"
+                  linking="sourceonly"/>
+        <!-- sourceonly: Verlinkt auf den Concept, erscheint aber nicht
+             im "Siehe auch" des Concepts -->
+      </relcell>
+    </relrow>
+
+    <relrow>
+      <relcell>
+        <topicref href="../concepts/c_beteiligte_geraete.dita"/>
+      </relcell>
+      <relcell>
+        <topicref href="../tasks/t_recherche.dita"/>
+      </relcell>
+    </relrow>
+
+    <relrow>
+      <relcell>
+        <topicref href="../concepts/c_arbeitsschritte.dita"/>
+      </relcell>
+      <relcell>
+        <topicref href="../tasks/t_strukturierung.dita"/>
+        <topicref href="../tasks/t_redaktionelle_umsetzung.dita"/>
+      </relcell>
+    </relrow>
+
   </reltable>
+
 </map>
