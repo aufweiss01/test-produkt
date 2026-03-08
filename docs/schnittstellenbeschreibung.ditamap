@@ -8,6 +8,8 @@
        Der Pfad ist relativ zur Haupt-Map.
        format="ditamap": Pflichtangabe bei mapref auf .ditamap-Dateien -->
   <mapref href="../shared/reuse/reusable_product_names.ditamap" format="ditamap"/>
+  <mapref href="reuse/reusable_product_names.ditamap">
+  <mapref href="reuse/reusable_image_refs.ditamap">
 
   <!-- topicref: Verweist auf ein Topic. href ist relativ zur Map.
        Die Reihenfolge der topicrefs bestimmt die Reihenfolge im Ausgabedokument. -->
