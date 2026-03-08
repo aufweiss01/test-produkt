@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+
+<task id="t_recherche" xml:lang="de-DE">
+<!-- Hinweis: Bei Titeländerung Dateinamen und alle Referenzen auf diese Datei anpassen -->
+
+  <title>Recherche</title>
+
+  <taskbody>
+
+    <context>
+      <p>Für die Dokumentation der <term>Navigationsschnittstelle</term> recherchieren
+      Sie alle relevanten technischen Unterlagen von
+      <ph keyref="hersteller_opmi"/> und <ph keyref="hersteller_navi"/>.</p>
+    </context>
+
+    <steps>
+
+      <step>
+        <cmd>Fordern Sie die technischen Spezifikationen des
+        <term>Operationsmikroskops</term> <ph keyref="produktname_opmi"/> bei
+        <ph keyref="hersteller_opmi"/> an.</cmd>
+      </step>
+
+      <step>
+        <cmd>Fordern Sie die technischen Spezifikationen des
+        <term>Navigationsgeräts</term> <ph keyref="produktname_navi"/> bei
+        <ph keyref="hersteller_navi"/> an.</cmd>
+      </step>
+
+      <step>
+        <cmd>Prüfen Sie, ob bestehende Normen oder Standards für die Dokumentation
+        von <term>Navigationsschnittstellen</term> relevant sind.</cmd>
+      </step>
+
+    </steps>
+
+  </taskbody>
+</task>
