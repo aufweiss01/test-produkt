@@ -1,5 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE map PUBLIC "-//OASIS//DTD DITA Map//EN" "map.dtd">
-<map>
-  <title>Externe Links (Keys)</title>
+<map xml:lang="de-DE">
+
+  <title>Externe Links</title>
+
+  <keydef keys="link_hersteller_navi"
+          href="https://www.aufweiss.de"
+          format="html"
+          scope="external">
+  <!-- keydef: Definiert einen Key für einen externen Link.
+       href: Ziel-URL – hier fiktiv.
+       format="html": Gibt an, dass das Ziel eine Webseite ist.
+       scope="external": Pflichtangabe für Links außerhalb des Projekts;
+       verhindert, dass DITA-OT versucht, die Seite lokal aufzulösen.
+       Referenziert aus: tasks/t_recherche.dita -->
+  </keydef>
+
 </map>
