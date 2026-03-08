@@ -9,6 +9,8 @@
        format="ditamap": Pflichtangabe bei mapref auf .ditamap-Dateien -->
   <mapref href="../shared/reuse/reusable_product_names.ditamap" format="ditamap"/>
 
-  <!-- Topics – werden in Schritt 3 ergänzt -->
+  <!-- topicref: Verweist auf ein Topic. href ist relativ zur Map.
+       Die Reihenfolge der topicrefs bestimmt die Reihenfolge im Ausgabedokument. -->
+  <topicref href="concepts/c_aufgabenstellung.dita"/>
 
 </map>
