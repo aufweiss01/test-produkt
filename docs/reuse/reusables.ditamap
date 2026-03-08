@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE map PUBLIC "-//OASIS//DTD DITA Map//EN" "map.dtd">
-<map>
-  <title>Reuse-Ressourcen (projektspezifisch)</title>
+<map xml:lang="de-DE">
+
+  <title>Projektspezifische Reuse-Ressourcen</title>
+
+  <mapref href="project_specific_names.ditamap" format="ditamap"/>
+  <!-- Referenz auf umbenannte Map: project_specific_names -->
   <mapref href="reusable_image_refs.ditamap" format="ditamap"/>
-  <mapref href="reusable_product_names.ditamap" format="ditamap"/>
+
 </map>

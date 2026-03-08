@@ -10,7 +10,7 @@
   <!-- mapref: Bindet alle Shared-Ressourcen ein (Variablen, Bildreferenzen, externe Links) -->
 
   <!-- Projektspezifische Reuse-Ressourcen -->
-  <mapref href="reuse/reusable_product_names.ditamap" format="ditamap"/>
+  <mapref href="reuse/project_specific_names.ditamap" format="ditamap"/>
   <mapref href="reuse/reusable_image_refs.ditamap" format="ditamap"/>
 
   <!-- Links -->
