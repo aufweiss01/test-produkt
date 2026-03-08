@@ -1,5 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE map PUBLIC "-//OASIS//DTD DITA Map//EN" "map.dtd">
-<map>
-  <title>Bildreferenzen (Keys)</title>
+<map xml:lang="de-DE">
+
+  <title>Bildreferenzen</title>
+
+  <keydef keys="img_navigationsschnittstelle"
+          href="../images/opmi_navigationsschnittstelle.svg"
+          format="svg">
+  <!-- keydef: Definiert einen Key für ein Bild.
+       href: Pfad zum Bild, relativ zu dieser Map.
+       format: Pflichtangabe bei Bildreferenzen; gibt das Dateiformat an.
+       Referenziert aus: docs/tasks/t_redaktionelle_umsetzung.dita -->
+  </keydef>
+
 </map>
