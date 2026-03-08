@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+
+<task id="t_redaktionelle_umsetzung" xml:lang="de-DE">
+<!-- Hinweis: Bei Titeländerung Dateinamen und alle Referenzen auf diese Datei anpassen -->
+
+  <title>Redaktionelle Umsetzung</title>
+
+  <taskbody>
+
+    <context>
+      <p>Sie setzen die Dokumentation der <term>Navigationsschnittstelle</term>
+      zwischen <ph keyref="produktname_opmi"/> und <ph keyref="produktname_navi"/>
+      redaktionell um. Dabei halten Sie die Terminologievorgaben konsequent ein.</p>
+    </context>
+
+    <steps>
+
+      <step>
+        <cmd>Verwenden Sie ausschließlich die Vorzugsbenennung
+        <term>Operationsmikroskop</term> – nicht „Opmi" oder „Mikroskop".</cmd>
+      </step>
+
+      <step>
+        <cmd>Verwenden Sie ausschließlich die Vorzugsbenennung
+        <term>Navigationsschnittstelle</term> – nicht „Interface"
+        oder „Schnittstelle".</cmd>
+      </step>
+
+      <step>
+        <cmd>Verwenden Sie Produktnamen und Herstellernamen ausschließlich
+        als Variablen – nie als Freitext.</cmd>
+        <info>
+        <!-- info: Optionaler Zusatz zu einem Schritt; enthält ergänzende Informationen -->
+          <p>Produktnamen werden im Topic als <codeph>&lt;ph keyref="produktname_opmi"/&gt;</codeph>
+          bzw. <codeph>&lt;ph keyref="produktname_navi"/&gt;</codeph> eingefügt.
+          <!-- codeph: Kennzeichnet Code oder Syntax im Fließtext -->
+          Die Werte werden zentral in der Datei
+          <codeph>reusable_product_names.ditamap</codeph> gepflegt.</p>
+        </info>
+      </step>
+
+      <step>
+        <cmd>Kennzeichnen Sie alle Fachbegriffe mit dem Element
+        <codeph>&lt;term&gt;</codeph>.</cmd>
+      </step>
+
+    </steps>
+
+  </taskbody>
+</task>
