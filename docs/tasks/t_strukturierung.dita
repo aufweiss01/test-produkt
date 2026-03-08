@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+
+<task id="t_strukturierung" xml:lang="de-DE">
+<!-- Hinweis: Bei Titeländerung Dateinamen und alle Referenzen auf diese Datei anpassen -->
+
+  <title>Strukturierung</title>
+
+  <taskbody>
+
+    <context>
+      <p>Auf Basis der Rechercheergebnisse strukturieren Sie die Dokumentation
+      der <term>Navigationsschnittstelle</term> modular nach den Prinzipien
+      des Topic-Based Authoring.</p>
+    </context>
+
+    <steps>
+
+      <step>
+        <cmd>Gliedern Sie die <term>Navigationsschnittstelle</term> in ihre
+        Komponenten: <term>mechanische Schnittstelle</term> und
+        <term>Softwareschnittstelle</term>.</cmd>
+      </step>
+
+      <step>
+        <cmd>Legen Sie für jede Komponente eigene Topic-Module an.</cmd>
+      </step>
+
+      <step>
+        <cmd>Identifizieren Sie Inhalte, die komponentenübergreifend
+        wiederverwendet werden können, und lagern Sie diese in die
+        Shared Library aus.</cmd>
+      </step>
+
+    </steps>
+
+  </taskbody>
+</task>
