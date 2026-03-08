@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<!-- DOCTYPE: Deklariert den Dokumenttyp als DITA-Task.
+     Task-Topics beschreiben "Wie mache ich X?" in einer festen Schrittstruktur -->
+
+<task id="t_analyse_aufgabenstellung" xml:lang="de-DE">
+<!-- Hinweis: Bei Titeländerung Dateinamen und alle Referenzen auf diese Datei anpassen -->
+
+  <title>Analyse der Aufgabenstellung</title>
+
+  <taskbody>
+  <!-- taskbody: Pflicht-Container für den Inhalt eines Task-Topics -->
+
+    <context>
+    <!-- context: Optionaler Abschnitt; beschreibt den Kontext der Aufgabe -->
+      <p>Vor der Dokumentation der <term>Navigationsschnittstelle</term> analysieren
+      Sie die Aufgabenstellung sorgfältig.</p>
+
+      <note type="warning"
+        conref="../shared/warnings/warnings.dita#warnings/warn_schnittstellendoku">
+      <!-- conref: Referenziert den Warnhinweis aus dem Shared-Repo.
+           Syntax: Pfad zur Datei # Topic-ID / Element-ID
+           Der Inhalt dieses Elements wird bei der Publikation durch den
+           referenzierten Inhalt ersetzt. -->
+      </note>
+    </context>
+
+    <steps>
+    <!-- steps: Pflicht-Container für die Schrittfolge eines Tasks -->
+
+      <step>
+        <cmd>Klären Sie den Umfang der zu dokumentierenden
+        <term>Navigationsschnittstelle</term>.</cmd>
+        <!-- cmd: Pflicht-Element eines steps; enthält die eigentliche Handlungsanweisung -->
+      </step>
+
+      <step>
+        <cmd>Identifizieren Sie die beteiligten Komponenten:
+        <term>mechanische Schnittstelle</term> und
+        <term>Softwareschnittstelle</term>.</cmd>
+      </step>
+
+      <step>
+        <cmd>Stimmen Sie die Anforderungen mit dem Hersteller
+        <ph keyref="hersteller_navi"/> ab.</cmd>
+      </step>
+
+    </steps>
+
+  </taskbody>
+</task>
