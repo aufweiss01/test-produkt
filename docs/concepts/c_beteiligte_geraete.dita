@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE concept PUBLIC "-//OASIS//DTD DITA Concept//EN" "concept.dtd">
+
+<concept id="c_beteiligte_geraete" xml:lang="de-DE">
+
+  <title>Beteiligte Geräte
+  <!-- Hinweis: Bei Titeländerung Dateinamen und alle Referenzen auf diese Datei anpassen -->
+  </title>
+
+  <conbody>
+
+    <section>
+      <title>Operationsmikroskop</title>
+      <p>Das <term>Operationsmikroskop</term> <ph keyref="produktname_opmi"/> wird von
+      <ph keyref="hersteller_opmi"/> hergestellt. Es bildet die Grundlage für die
+      zu dokumentierende <term>Navigationsschnittstelle</term>.</p>
+    </section>
+
+    <section>
+      <title>Navigationsgerät</title>
+      <p>Das <term>Navigationsgerät</term> <ph keyref="produktname_navi"/> wird von
+      <ph keyref="hersteller_navi"/> hergestellt. Es unterstützt das
+      <term>Operationsmikroskop</term> beim Wiederfinden von Fokuspunkten und
+      Positionierungen über die <term>Navigationsschnittstelle</term>, die in eine
+      <term>mechanische Schnittstelle</term> und eine
+      <term>Softwareschnittstelle</term> untergliedert ist.</p>
+    </section>
+
+  </conbody>
+</concept>

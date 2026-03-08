@@ -12,5 +12,6 @@
   <!-- topicref: Verweist auf ein Topic. href ist relativ zur Map.
        Die Reihenfolge der topicrefs bestimmt die Reihenfolge im Ausgabedokument. -->
   <topicref href="concepts/c_aufgabenstellung.dita"/>
+  <topicref href="concepts/c_beteiligte_geraete.dita"/>
 
 </map>
