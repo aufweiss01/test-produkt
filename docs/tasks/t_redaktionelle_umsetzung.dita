@@ -45,6 +45,25 @@
         <codeph>&lt;term&gt;</codeph>.</cmd>
       </step>
 
+      <step>
+        <cmd>Prüfen Sie die Darstellung der
+        <term>Navigationsschnittstelle</term> anhand der folgenden Abbildung.</cmd>
+        <info>
+          <fig>
+          <!-- fig: Container für eine Abbildung; ermöglicht Titel und Bildunterschrift -->
+            <title>Navigationsschnittstelle – Übersicht</title>
+            <image keyref="img_navigationsschnittstelle">
+            <!-- image keyref: Referenziert das Bild über den Key aus
+                 reusable_image_refs.ditamap – nie direkt per href auf die Bilddatei -->
+              <alt>Schematische Darstellung der Navigationsschnittstelle
+              zwischen Operationsmikroskop und Navigationsgerät</alt>
+              <!-- alt: Pflichtangabe für Barrierefreiheit;
+                   beschreibt den Bildinhalt für Screenreader -->
+            </image>
+          </fig>
+        </info>
+      </step>
+
     </steps>
 
   </taskbody>
