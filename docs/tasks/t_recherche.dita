@@ -33,6 +33,21 @@
         von <term>Navigationsschnittstellen</term> relevant sind.</cmd>
       </step>
 
+      <step>
+        <cmd>Besuchen Sie die Website des Herstellers
+        <ph keyref="hersteller_navi"/> für weiterführende
+        technische Unterlagen.</cmd>
+        <info>
+          <xref keyref="link_hersteller_navi" format="html" scope="external">
+          <!-- xref keyref: Referenziert einen externen Link über den Key aus
+               external_links.ditamap – nie direkt per href auf die URL.
+               format="html": Ziel ist eine Webseite.
+               scope="external": Pflichtangabe für Links außerhalb des Projekts -->
+            Website <ph keyref="hersteller_navi"/>
+          </xref>
+        </info>
+      </step>
+
     </steps>
 
   </taskbody>
