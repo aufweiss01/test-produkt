@@ -3,7 +3,12 @@
 
 <map xml:lang="de-DE">
 
-  <title>Schnittstellenbeschreibung – Ein Arbeitsbeispiel</title>
+  <title>Schnittstellenbeschreibung</title>
+
+  <topicmeta>
+    <othermeta name="doc-id" content="SB-001"/>
+    <othermeta name="doc-type" content="Schnittstellenbeschreibung"/>
+  </topicmeta>
 
   <!-- Reuse-Ressourcen aus dem Shared-Repo -->
   <mapref href="../shared/reuse/reusables.ditamap" format="ditamap"/>

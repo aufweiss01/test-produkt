@@ -9,6 +9,22 @@
        Es enthält keinen eigenen Inhalt, sondern gruppiert die Task-Topics
        als Unterkapitel in der Haupt-Map. -->
 
+  <prolog>
+    <metadata>
+      <prodinfo>
+        <prodname keyref="produktname"/>
+        <vrmlist><vrm version="1.0"/></vrmlist>
+      </prodinfo>
+      <audience type="user" job="operating" experiencelevel="general"/>
+      <othermeta name="component" content="Navigationsschnittstelle"/>
+      <othermeta name="lifecycle-stage" content="operation"/>
+      <othermeta name="status" content="draft"/>
+      <othermeta name="assignee" content=""/>
+    </metadata>
+    <!-- Erstelldatum, Änderungsdatum und Autor werden nicht im Prolog geführt.
+        Diese Metadaten werden automatisch aus dem Git-Verlauf ausgelesen. -->
+</prolog>
+
   <conbody/>
   <!-- conbody: Pflicht-Element; bleibt hier bewusst leer -->
 

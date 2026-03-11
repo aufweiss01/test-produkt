@@ -4,7 +4,26 @@
 <task id="t_analyse_aufgabenstellung" xml:lang="de-DE">
 <!-- Hinweis: Bei Titeländerung Dateinamen und alle Referenzen auf diese Datei anpassen -->
 
-  <title>Analyse der Aufgabenstellung</title>
+  <title>Aufgabenstellung analysieren
+  <!-- Dateiname und Titel dürfen voneinander abweichen.
+       Bei Titeländerung Dateinamen und alle Referenzen anpassen. -->
+  </title>
+  
+  <prolog>
+    <metadata>
+      <prodinfo>
+        <prodname keyref="produktname"/>
+        <vrmlist><vrm version="1.0"/></vrmlist>
+      </prodinfo>
+      <audience type="user" job="operating" experiencelevel="general"/>
+      <othermeta name="component" content="Navigationsschnittstelle"/>
+      <othermeta name="lifecycle-stage" content="operation"/>
+      <othermeta name="status" content="draft"/>
+      <othermeta name="assignee" content=""/>
+    </metadata>
+    <!-- Erstelldatum, Änderungsdatum und Autor werden nicht im Prolog geführt.
+        Diese Metadaten werden automatisch aus dem Git-Verlauf ausgelesen. -->
+  </prolog>
 
   <taskbody>
 

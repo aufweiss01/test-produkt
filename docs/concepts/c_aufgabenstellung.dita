@@ -4,46 +4,25 @@
 <concept id="c_aufgabenstellung" xml:lang="de-DE">
 <!-- Hinweis: Bei Titeländerung Dateinamen und alle Referenzen auf diese Datei anpassen -->
 
-  <title>Aufgabenstellung</title>
-
+  <title>Aufgabenstellung
+  <!-- Dateiname und Titel dürfen voneinander abweichen.
+       Bei Titeländerung Dateinamen und alle Referenzen anpassen. -->
+  </title>
+  
   <prolog>
-  <!-- prolog: Enthält Metadaten zum Topic; wird nicht in der Ausgabe angezeigt,
-       aber von DITA-OT und dem Python-Skript (STATUS.html) ausgewertet -->
-
     <metadata>
-
       <prodinfo>
-      <!-- prodinfo: Produktzugehörigkeit des Topics -->
         <prodname keyref="produktname"/>
-        <!-- prodname: Referenziert den Produktnamen als Key -->
-        <vrmlist>
-          <vrm version="1.0"/>
-          <!-- vrm: Versionsnummer des Produkts zum Zeitpunkt der Erstellung -->
-        </vrmlist>
+        <vrmlist><vrm version="1.0"/></vrmlist>
       </prodinfo>
-
-      <othermeta name="doc-id" content="SB-001"/>
-      <!-- doc-id: Eindeutige ID des Topics im Dokument.
-           Konvention: Kürzel für Dokumenttyp + dreistellige Nummer
-           SB = Schnittstellenbeschreibung -->
-      <othermeta name="doc-type" content="Schnittstellenbeschreibung"/>
-      <!-- doc-type: Dokumenttyp; wird im Metadaten-Skript ausgewertet -->
+      <audience type="user" job="operating" experiencelevel="general"/>
+      <othermeta name="component" content="Navigationsschnittstelle"/>
+      <othermeta name="lifecycle-stage" content="operation"/>
       <othermeta name="status" content="draft"/>
-      <!-- status: Bearbeitungsstatus; Werte: draft | in-review | approved -->
       <othermeta name="assignee" content=""/>
-      <!-- assignee: Verantwortliche Person; bei Bedarf ausfüllen -->
-
     </metadata>
-
-    <author><!-- Name des Autors --></author>
-    <!-- author: Wird im Metadaten-Skript ausgewertet -->
-
-    <critdates>
-    <!-- critdates: Enthält Erstellungs- und Änderungsdatum -->
-      <created date="2026-03-08"/>
-      <revised modified="2026-03-08"/>
-    </critdates>
-
+    <!-- Erstelldatum, Änderungsdatum und Autor werden nicht im Prolog geführt.
+        Diese Metadaten werden automatisch aus dem Git-Verlauf ausgelesen. -->
   </prolog>
 
   <conbody>
