@@ -23,6 +23,25 @@
       </step>
 
       <step>
+        <cmd>Sichten Sie die vorhandene Dokumentation zum Produkt.</cmd>
+      </step>
+
+      <step product="optiscope_x200">
+        <cmd>Prüfen Sie die technischen Daten der
+          <ph keyref="produktname"/>-Navigationssschnittstelle
+          im Herstellerportal (<xref keyref="link_hersteller_navi"/>).
+        </cmd>
+      </step>
+
+      <step product="optiscope_b800">
+        <cmd>Schreiben Sie etwas, das ALLE überraschen wird - sowohl Hersteller als auch externe Partner und Kunden.</cmd>
+      </step>
+
+      <step>
+        <cmd>Dokumentieren Sie alle relevanten Schnittstellenparameter.</cmd>
+      </step>
+
+      <step>
         <cmd>Fordern Sie die technischen Spezifikationen des
         <term>Navigationsgeräts</term> <ph keyref="navi"/> bei
         <ph keyref="navi_hersteller"/> an.</cmd>
