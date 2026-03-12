@@ -11,11 +11,11 @@
 
   <prolog>
     <metadata>
+      <audience type="user" job="operating" experiencelevel="general"/>
       <prodinfo>
         <prodname keyref="produktname"/>
         <vrmlist><vrm version="1.0"/></vrmlist>
       </prodinfo>
-      <audience type="user" job="operating" experiencelevel="general"/>
       <othermeta name="component" content="Navigationsschnittstelle"/>
       <othermeta name="lifecycle-stage" content="operation"/>
       <othermeta name="status" content="draft"/>
