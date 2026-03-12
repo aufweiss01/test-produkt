@@ -1,29 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE reference PUBLIC "-//OASIS//DTD DITA Reference//EN" "reference.dtd">
-<reference id="ref_beispiel">
+<!DOCTYPE reference PUBLIC "-//OASIS//DTD DITA 1.3 Reference//EN" "reference.dtd">
+
+<reference id="ref_beispiel" xml:lang="de-DE">
   <title>Beispiel-Reference</title>
   <prolog>
     <metadata>
+      <audience type="user" job="operating" experiencelevel="general"/>
       <prodinfo>
         <prodname keyref="produktname"/>
         <vrmlist><vrm version="1.0"/></vrmlist>
       </prodinfo>
-      <othermeta name="doc-id" content="HB-003"/>
-      <othermeta name="doc-type" content="Handbuch"/>
+      <othermeta name="component" content=""/>
+      <othermeta name="lifecycle-stage" content="operation"/>
       <othermeta name="status" content="draft"/>
       <othermeta name="assignee" content=""/>
     </metadata>
-    <author></author>
-    <critdates>
-      <created date="2026-02-23"/>
-      <revised modified="2026-02-23"/>
-    </critdates>
   </prolog>
   <refbody>
     <table>
       <tgroup cols="2">
-        <thead><row><entry>Parameter</entry><entry>Wert</entry></row></thead>
-        <tbody><row><entry>Beispiel</entry><entry>Wert</entry></row></tbody>
+        <thead>
+          <row><entry>Parameter</entry><entry>Wert</entry></row>
+        </thead>
+        <tbody>
+          <row><entry>Beispiel</entry><entry>Wert</entry></row>
+        </tbody>
       </tgroup>
     </table>
   </refbody>
