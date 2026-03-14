@@ -13,7 +13,7 @@
     <metadata>
       <audience type="user" job="operating" experiencelevel="general"/>
       <prodinfo>
-        <prodname keyref="produktname"/>
+        <prodname>OptiScope X200</prodname>
         <vrmlist><vrm version="1.0"/></vrmlist>
       </prodinfo>
       <othermeta name="component" content="Navigationsschnittstelle"/>
