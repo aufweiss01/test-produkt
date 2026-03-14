@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE TBX-Default SYSTEM "TBXcoreStructV03_TBX-Default_strict.dtd">
+<!--
+  Projektspezifische Terminologiedatenbank
+  Speicherort: docs/reuse/project_specific_termbase.tbx
+  Stand:       2026-03-14  |  Version: 1.0
+  Format:      TBX-Default (ISO 30042:2019)
+
+  INHALT
+  ======
+  Begriffe, die nur für dieses Projekt gelten.
+  Kundenweit gültige Begriffe stehen in:
+  shared/customer_specific_termbase.tbx
+
+  AUSBAUSTUFEN
+  =============
+  Aktuell befüllt:     TBX-Basic
+                       (Begriff, Sprachebene, termType)
+  Struktur vorbereitet für TBX-Default:
+                       Definitionen, Grammatik, Beziehungen –
+                       entsprechende Felder sind auskommentiert
+                       und können bei Bedarf aktiviert werden.
+
+  TERMTYPE-WERTE
+  ==============
+  preferredTerm  – Vorzugsbenennung
+  admittedTerm   – erlaubt, aber nicht bevorzugt
+  deprecatedTerm – verboten
+
+  ID-SCHEMA
+  =========
+  Projektspezifische IDs beginnen mit "p-" um Konflikte mit
+  den IDs in customer_specific_termbase.tbx zu vermeiden.
+-->
+<TBX-Default xml:lang="de-DE"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <tbxHeader>
+    <fileDesc>
+      <titleStmt>
+        <title>Projektspezifische Terminologie – Schnittstellenbeschreibung Optiscope X200</title>
+      </titleStmt>
+      <sourceDesc>
+        <p>Erarbeitet im Rahmen des DITA-Dokumentenmanagement-Projekts, März 2026.</p>
+      </sourceDesc>
+    </fileDesc>
+  </tbxHeader>
+
+  <text>
+    <body>
+
+      <!-- ============================================================
+           KONZEPT p-c001: Mechanische Schnittstelle
+           Partitiver Unterbegriff von Navigationsschnittstelle
+           (c002 in customer_specific_termbase.tbx)
+           ============================================================ -->
+      <conceptEntry id="p-c001">
+
+        <!--
+          TBX-Default-Erweiterung:
+          <descrip type="definition">
+            Physische, mechanische Verbindung zur Navigation des
+            Operationsmikroskops.
+          </descrip>
+        -->
+
+        <langSec xml:lang="de-DE">
+
+          <termSec>
+            <term>mechanische Schnittstelle</term>
+            <termNote type="termType">preferredTerm</termNote>
+            <!--
+              TBX-Default-Erweiterung:
+              <termNote type="partOfSpeech">noun</termNote>
+              <termNote type="grammaticalGender">feminine</termNote>
+              Begriffsbeziehung (partitiv unter c002 in
+              customer_specific_termbase.tbx):
+              <descrip type="broader">c002</descrip>
+            -->
+          </termSec>
+
+        </langSec>
+
+        <!--
+          TBX-Default-Erweiterung: weitere Sprachen
+          <langSec xml:lang="en-GB">
+            <termSec>
+              <term>mechanical interface</term>
+              <termNote type="termType">preferredTerm</termNote>
+            </termSec>
+          </langSec>
+        -->
+
+      </conceptEntry>
+
+
+      <!-- ============================================================
+           KONZEPT p-c002: Softwareschnittstelle
+           Partitiver Unterbegriff von Navigationsschnittstelle
+           (c002 in customer_specific_termbase.tbx)
+           ============================================================ -->
+      <conceptEntry id="p-c002">
+
+        <!--
+          TBX-Default-Erweiterung:
+          <descrip type="definition">
+            Softwarebasierte Verbindung zur Navigation des
+            Operationsmikroskops.
+          </descrip>
+        -->
+
+        <langSec xml:lang="de-DE">
+
+          <termSec>
+            <term>Softwareschnittstelle</term>
+            <termNote type="termType">preferredTerm</termNote>
+            <!--
+              TBX-Default-Erweiterung:
+              <termNote type="partOfSpeech">noun</termNote>
+              <termNote type="grammaticalGender">feminine</termNote>
+              Begriffsbeziehung (partitiv unter c002 in
+              customer_specific_termbase.tbx):
+              <descrip type="broader">c002</descrip>
+            -->
+          </termSec>
+
+        </langSec>
+
+        <!--
+          TBX-Default-Erweiterung: weitere Sprachen
+          <langSec xml:lang="en-GB">
+            <termSec>
+              <term>software interface</term>
+              <termNote type="termType">preferredTerm</termNote>
+            </termSec>
+          </langSec>
+        -->
+
+      </conceptEntry>
+
+    </body>
+  </text>
+
+</TBX-Default>
