@@ -32,7 +32,7 @@
       Sie die Aufgabenstellung sorgfältig.</p>
 
       <note type="warning"
-        conref="../shared/warnings/warnings.dita#warnings/warn_schnittstellendoku">
+        conref="../../shared/warnings/warnings.dita#warnings/warn_schnittstellendoku">
       </note>
     </context>
 
