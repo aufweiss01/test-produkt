@@ -14,8 +14,10 @@
       <ph keyref="hersteller"/> und <ph keyref="navi_hersteller"/>.</p>
     </context>
 
-    <note conref="../../shared/warnings/warnings.dita#warnings/warn_schnittstellendoku"/>
-
+    <prereq>
+      <note conref="../../shared/warnings/warnings.dita#warnings/warn_schnittstellendoku"/>
+    </prereq>
+    
     <steps>
 
       <step>
