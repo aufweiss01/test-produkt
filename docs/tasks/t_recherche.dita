@@ -8,15 +8,15 @@
 
   <taskbody>
 
+    <prereq>
+      <note conref="../../shared/warnings/warnings.dita#warnings/warn_schnittstellendoku"/>
+    </prereq>
+
     <context>
       <p>Für die Dokumentation der <term>Navigationsschnittstelle</term> recherchieren
       Sie alle relevanten technischen Unterlagen von
       <ph keyref="hersteller"/> und <ph keyref="navi_hersteller"/>.</p>
     </context>
-
-    <prereq>
-      <note conref="../../shared/warnings/warnings.dita#warnings/warn_schnittstellendoku"/>
-    </prereq>
     
     <steps>
 
