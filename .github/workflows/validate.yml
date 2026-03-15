@@ -1,16 +1,211 @@
-name: DITA Validation
+name: DITA Validierung
+
+# ============================================================
+# WANN LÄUFT DIE PIPELINE?
+# ============================================================
+# Push auf beliebigen Branch:
+#   → Pipeline läuft, Fehler erzeugen nur eine Warnung.
+#   → Autor bekommt automatisch eine E-Mail von GitHub.
+#   → Der Push wird NICHT blockiert.
+#
+# Pull Request nach develop oder main:
+#   → Pipeline läuft verbindlich.
+#   → Fehler blockieren den Merge (Branch Protection Rule
+#     muss in GitHub einmalig aktiviert werden – siehe unten).
+# ============================================================
+
 on:
   push:
-    branches: [ main, develop ]
+    branches:
+      - '**'
   pull_request:
-    branches: [ main, develop ]
+    branches:
+      - develop
+      - main
+
 jobs:
-  validate:
-    runs-on: ubuntu-latest
+  validierung:
+    runs-on: ubuntu-24.04
+
+    # Bei Push: Fehler erzeugen eine Warnung, blockieren aber nicht.
+    # Bei Pull Request: Fehler blockieren den Merge.
+    continue-on-error: ${{ github.event_name == 'push' && !contains(fromJSON('["develop", "main"]'), github.ref_name) }}
+
     steps:
-      - uses: actions/checkout@v4
+
+      # ----------------------------------------------------------
+      # 1. Repo auschecken (inkl. Submodul shared/)
+      # ----------------------------------------------------------
+      - name: Repository auschecken
+        uses: actions/checkout@v4
         with:
           submodules: true
-      - name: Validate XML (Platzhalter)
+
+      # ----------------------------------------------------------
+      # 2. Java einrichten (für Saxon)
+      # ----------------------------------------------------------
+      - name: Java einrichten
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      # ----------------------------------------------------------
+      # 3. Saxon-HE herunterladen
+      #    Wird in /opt/saxon/ abgelegt und steht dann für alle
+      #    folgenden Schritte zur Verfügung.
+      # ----------------------------------------------------------
+      - name: Saxon-HE herunterladen
         run: |
-          echo "Validierungsskript wird hier eingetragen ^(AP 3^)"
+          mkdir -p /opt/saxon
+          curl -L -o /opt/saxon/saxon-he.jar \
+            "https://repo1.maven.org/maven2/net/sf/saxon/Saxon-HE/12.9/Saxon-HE-12.9.jar"
+
+      # ----------------------------------------------------------
+      # 4. xmllint installieren (für DTD-Validierung)
+      #    Ist auf ubuntu-latest über apt verfügbar.
+      # ----------------------------------------------------------
+      - name: xmllint installieren
+        run: sudo apt-get install -y libxml2-utils
+
+      # ----------------------------------------------------------
+      # 5. DITA-OT herunterladen (für DTD-Katalog)
+      #    Wir brauchen nicht das vollständige Publishing –
+      #    nur den XML-Katalog für die DTD-Auflösung.
+      # ----------------------------------------------------------
+      - name: DITA-OT herunterladen
+        run: |
+          curl -L -o /tmp/dita-ot.zip \
+            "https://github.com/dita-ot/dita-ot/releases/download/4.4/dita-ot-4.4.zip"
+          unzip -q /tmp/dita-ot.zip -d /opt/
+          mv /opt/dita-ot-4.4 /opt/dita-ot
+
+      # ----------------------------------------------------------
+      # 6. Geänderte DITA-Dateien ermitteln
+      #    Bei Push: alle geänderten Dateien im Commit.
+      #    Bei Pull Request: alle geänderten Dateien im PR.
+      # ----------------------------------------------------------
+      - name: Geänderte DITA-Dateien ermitteln
+        id: dita_dateien
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            DATEIEN=$(git diff --name-only \
+              origin/${{ github.base_ref }}...HEAD \
+              -- '*.dita' '*.ditamap' | tr '\n' ' ')
+          else
+            DATEIEN=$(git diff --name-only HEAD~1 HEAD \
+              -- '*.dita' '*.ditamap' 2>/dev/null \
+              || git diff --name-only HEAD \
+              -- '*.dita' '*.ditamap' | tr '\n' ' ')
+          fi
+          echo "dateien=$DATEIEN" >> $GITHUB_OUTPUT
+          echo "Gefundene DITA-Dateien: $DATEIEN"
+
+      # ----------------------------------------------------------
+      # 7. DTD-Validierung mit xmllint
+      #    Prüft jede geänderte Datei gegen die DITA-DTD.
+      #    Der XML-Katalog von DITA-OT löst die DTD-Referenzen auf.
+      # ----------------------------------------------------------
+      - name: DTD-Validierung
+        if: steps.dita_dateien.outputs.dateien != ''
+        run: |
+          FEHLER=0
+          KATALOG="/opt/dita-ot/catalog-dita.xml"
+
+          for DATEI in ${{ steps.dita_dateien.outputs.dateien }}; do
+            if [ -f "$DATEI" ]; then
+              echo "Prüfe: $DATEI"
+              if ! xmllint --noout --valid \
+                           --catalogs "$KATALOG" \
+                           "$DATEI" 2>&1; then
+                echo "DTD-FEHLER in: $DATEI"
+                FEHLER=1
+              fi
+            fi
+          done
+
+          if [ $FEHLER -ne 0 ]; then
+            echo ""
+            echo "❌ DTD-Validierung fehlgeschlagen."
+            echo "Bitte die oben angezeigten Fehler korrigieren."
+            exit 1
+          else
+            echo ""
+            echo "✅ DTD-Validierung erfolgreich."
+          fi
+
+      # ----------------------------------------------------------
+      # 8. Schematron-Validierung mit Saxon
+      #    Dreistufige Pipeline:
+      #    a) Schematron → XSLT kompilieren (iso_svrl_for_xslt2.xsl)
+      #    b) XSLT auf jede DITA-Datei anwenden → SVRL-Ergebnis
+      #    c) SVRL auf Fehler prüfen
+      #
+      #    Skeleton-Dateien liegen in shared/schematron/
+      #    Schematron-Regeln liegen in shared/schematron/dita_rules.sch
+      # ----------------------------------------------------------
+      - name: Schematron-Validierung
+        if: steps.dita_dateien.outputs.dateien != ''
+        run: |
+          FEHLER=0
+          SAXON="java -jar /opt/saxon/saxon-he.jar"
+          SKELETON="shared/schematron/iso_svrl_for_xslt2.xsl"
+          REGELN="shared/schematron/dita_rules.sch"
+          KOMPILIERT="/tmp/dita_rules_compiled.xsl"
+
+          # Schritt a: Schematron-Regeln in XSLT kompilieren
+          echo "Kompiliere Schematron-Regeln..."
+          $SAXON -s:"$REGELN" \
+                 -xsl:"$SKELETON" \
+                 -o:"$KOMPILIERT"
+
+          # Schritt b+c: Kompiliertes XSLT auf jede Datei anwenden
+          for DATEI in ${{ steps.dita_dateien.outputs.dateien }}; do
+            if [ -f "$DATEI" ] && [[ "$DATEI" == *.dita ]]; then
+              echo "Prüfe: $DATEI"
+              ERGEBNIS=$($SAXON -s:"$DATEI" \
+                                -xsl:"$KOMPILIERT" 2>&1)
+
+              # Auf fehlgeschlagene Assertions prüfen (role="error")
+              if echo "$ERGEBNIS" | grep -q "failed-assert"; then
+                echo "$ERGEBNIS"
+                echo "SCHEMATRON-FEHLER in: $DATEI"
+                FEHLER=1
+              fi
+
+              # Warnungen anzeigen (role="warning"), aber nicht blockieren
+              if echo "$ERGEBNIS" | grep -q "successful-report"; then
+                echo "SCHEMATRON-WARNUNG in: $DATEI"
+                echo "$ERGEBNIS" | grep -A2 "successful-report"
+              fi
+            fi
+          done
+
+          if [ $FEHLER -ne 0 ]; then
+            echo ""
+            echo "❌ Schematron-Validierung fehlgeschlagen."
+            echo "Bitte die oben angezeigten Fehler korrigieren."
+            exit 1
+          else
+            echo ""
+            echo "✅ Schematron-Validierung erfolgreich."
+          fi
+
+# ============================================================
+# BRANCH PROTECTION RULE IN GITHUB EINRICHTEN
+# ============================================================
+# Damit Pull Requests bei Fehlern blockiert werden, muss in
+# GitHub einmalig eine Branch Protection Rule aktiviert werden:
+#
+# 1. GitHub → test-produkt → Settings → Branches
+# 2. "Add branch protection rule" klicken
+# 3. Branch name pattern: develop
+# 4. Haken setzen bei:
+#    ✅ Require status checks to pass before merging
+#    ✅ Require branches to be up to date before merging
+#    Unter "Status checks": "validierung" suchen und auswählen
+# 5. Speichern – dasselbe für "main" wiederholen
+#
+# Hinweis: Der Status-Check "validierung" erscheint in der
+# Suche erst, nachdem die Pipeline mindestens einmal gelaufen ist.
+# ============================================================
