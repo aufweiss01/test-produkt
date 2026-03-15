@@ -35,11 +35,32 @@ jobs:
 
       # ----------------------------------------------------------
       # 1. Repo auschecken (inkl. Submodul shared/)
+      #
+      # Das Submodul (test-shared bzw. kunde-xyz-shared) ist ein
+      # privates Repository. GitHub Actions hat darauf keinen
+      # automatischen Zugriff. Der Personal Access Token (PAT)
+      # wird als Secret im Produktrepo hinterlegt und hier
+      # übergeben, damit das Submodul ausgecheckt werden kann.
+      #
+      # SECRET EINRICHTEN (einmalig pro Produktrepo):
+      #   GitHub → test-produkt → Settings →
+      #   Secrets and variables → Actions →
+      #   New repository secret
+      #   Name:  SUBMODULE_PAT
+      #   Value: Personal Access Token mit repo-Berechtigung
+      #
+      # PAT ERSTELLEN (einmalig pro GitHub-Account):
+      #   GitHub → Profilbild → Settings →
+      #   Developer settings →
+      #   Personal access tokens → Tokens (classic) →
+      #   Generate new token (classic)
+      #   Berechtigung: repo (alle Unterberechtigungen)
       # ----------------------------------------------------------
       - name: Repository auschecken
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           submodules: true
+          token: ${{ secrets.SUBMODULE_PAT }}
 
       # ----------------------------------------------------------
       # 2. Java einrichten (für Saxon)
