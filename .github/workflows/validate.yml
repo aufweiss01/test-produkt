@@ -155,19 +155,19 @@ jobs:
       # 7. DTD-Validierung mit xmllint
       #    Prüft jede geänderte Datei gegen die DITA-DTD.
       #    Der XML-Katalog von DITA-OT löst die DTD-Referenzen auf.
+      #    WICHTIG: xmllint liest den Katalog über die Umgebungs-
+      #    variable SGML_CATALOG_FILES, nicht über --catalogs.
       # ----------------------------------------------------------
       - name: DTD-Validierung
         if: steps.dita_dateien.outputs.dateien != ''
         run: |
           FEHLER=0
-          KATALOG="/opt/dita-ot/catalog-dita.xml"
+          export SGML_CATALOG_FILES="/opt/dita-ot/catalog-dita.xml"
 
           for DATEI in ${{ steps.dita_dateien.outputs.dateien }}; do
             if [ -f "$DATEI" ]; then
               echo "Prüfe: $DATEI"
-              if ! xmllint --noout --valid \
-                           --catalogs "$KATALOG" \
-                           "$DATEI" 2>&1; then
+              if ! xmllint --noout --valid "$DATEI" 2>&1; then
                 echo "DTD-FEHLER in: $DATEI"
                 FEHLER=1
               fi
