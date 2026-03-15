@@ -162,12 +162,22 @@ jobs:
         if: steps.dita_dateien.outputs.dateien != ''
         run: |
           FEHLER=0
-          export SGML_CATALOG_FILES="/opt/dita-ot/catalog-dita.xml"
+          # XML_CATALOG_FILES (nicht SGML_CATALOG_FILES) ist die
+          # korrekte Variable für xmllint bei XML-Katalogen.
+          # Der DITA-OT-Katalog löst Public Identifier wie
+          # "-//OASIS//DTD DITA 1.3 Concept//EN" auf die
+          # tatsächlichen DTD-Dateien in DITA-OT auf.
+          export XML_CATALOG_FILES="/opt/dita-ot/catalog-dita.xml"
 
           for DATEI in ${{ steps.dita_dateien.outputs.dateien }}; do
             if [ -f "$DATEI" ]; then
               echo "Prüfe: $DATEI"
-              if ! xmllint --noout --valid "$DATEI" 2>&1; then
+              # Absoluten Pfad ermitteln, dann aus Repo-Wurzel prüfen.
+              # xmllint löst relative DTD-Pfade vom aktuellen
+              # Verzeichnis aus auf – daher immer aus der Repo-Wurzel
+              # aufrufen und absoluten Pfad übergeben.
+              ABSOLUT=$(realpath "$DATEI")
+              if ! xmllint --noout --valid "$ABSOLUT" 2>&1; then
                 echo "DTD-FEHLER in: $DATEI"
                 FEHLER=1
               fi
