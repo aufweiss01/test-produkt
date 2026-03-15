@@ -102,22 +102,51 @@ jobs:
           mv /opt/dita-ot-4.4 /opt/dita-ot
 
       # ----------------------------------------------------------
-      # 6. Geänderte DITA-Dateien ermitteln
-      #    Bei Push: alle geänderten Dateien im Commit.
-      #    Bei Pull Request: alle geänderten Dateien im PR.
+      # 6. DITA-Dateien ermitteln
+      #
+      # Bei Pull Request:
+      #   Nur geänderte Dateien prüfen (git diff gegen Basis-Branch).
+      #   Zuverlässig, weil origin/[basis] immer vorhanden ist.
+      #
+      # Bei Push:
+      #   Normalfall: git diff gegen Merge-Basis (Abzweigpunkt
+      #   des Branches von develop). Liefert genau die Dateien,
+      #   die auf diesem Branch geändert wurden.
+      #
+      #   Fallback: Wenn keine Merge-Basis gefunden wird (z.B.
+      #   erster Commit auf einem Branch ohne Vorgänger, oder
+      #   Branch Protection Rule nicht aktiv), werden ALLE
+      #   DITA-Dateien im Repo geprüft. Lieber einmal zu viel
+      #   prüfen als eine Lücke riskieren.
+      #   Dieser Fall sollte im Normalbetrieb nie eintreten,
+      #   da direkte Pushes auf develop und main durch Branch
+      #   Protection Rules blockiert sind.
       # ----------------------------------------------------------
-      - name: Geänderte DITA-Dateien ermitteln
+      - name: DITA-Dateien ermitteln
         id: dita_dateien
         run: |
           if [ "${{ github.event_name }}" = "pull_request" ]; then
+            # Pull Request: geänderte Dateien gegen Basis-Branch
             DATEIEN=$(git diff --name-only \
               origin/${{ github.base_ref }}...HEAD \
               -- '*.dita' '*.ditamap' | tr '\n' ' ')
           else
-            DATEIEN=$(git diff --name-only HEAD~1 HEAD \
-              -- '*.dita' '*.ditamap' 2>/dev/null \
-              || git diff --name-only HEAD \
-              -- '*.dita' '*.ditamap' | tr '\n' ' ')
+            # Push: Merge-Basis berechnen
+            git fetch origin develop --depth=50 2>/dev/null || true
+            BASE=$(git merge-base HEAD origin/develop 2>/dev/null || echo "")
+
+            if [ -n "$BASE" ]; then
+              # Normalfall: nur auf diesem Branch geänderte Dateien
+              DATEIEN=$(git diff --name-only "$BASE" HEAD \
+                -- '*.dita' '*.ditamap' | tr '\n' ' ')
+            else
+              # Fallback: alle DITA-Dateien prüfen
+              echo "HINWEIS: Keine Merge-Basis gefunden." \
+                   "Prüfe alle DITA-Dateien im Repo (sicherer Fallback)."
+              DATEIEN=$(find . \( -name '*.dita' -o -name '*.ditamap' \) \
+                | grep -v '^\./\.git' \
+                | tr '\n' ' ')
+            fi
           fi
           echo "dateien=$DATEIEN" >> $GITHUB_OUTPUT
           echo "Gefundene DITA-Dateien: $DATEIEN"
