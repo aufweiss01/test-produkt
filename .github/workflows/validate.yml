@@ -72,21 +72,27 @@ jobs:
           java-version: 21
 
       # ----------------------------------------------------------
-      # 3. Saxon-HE herunterladen (vollständiges Paket)
-      #    Saxon 12 benötigt die xmlresolver-Bibliothek als
-      #    Abhängigkeit. Wir laden daher das vollständige ZIP-Paket
-      #    von Saxonica herunter, das alle nötigen JARs enthält.
+      # 3. Saxon-HE und xmlresolver herunterladen
+      #    Maven ist auf ubuntu-24.04 vorinstalliert und löst
+      #    Abhängigkeiten automatisch auf. Saxon 12 benötigt
+      #    xmlresolver als Laufzeitabhängigkeit.
       # ----------------------------------------------------------
       - name: Saxon-HE herunterladen
         run: |
           mkdir -p /opt/saxon
-          curl -L -o /tmp/saxon.zip \
-            "https://repo1.maven.org/maven2/net/sf/saxon/Saxon-HE/12.9/Saxon-HE-12.9.zip"
-          unzip -q /tmp/saxon.zip -d /opt/saxon
-          # Alle JAR-Dateien für den Classpath sammeln
+          # Saxon-HE und xmlresolver per Maven dependency:copy laden
+          mvn dependency:copy \
+            -Dartifact=net.sf.saxon:Saxon-HE:12.9 \
+            -DoutputDirectory=/opt/saxon \
+            --quiet
+          mvn dependency:copy \
+            -Dartifact=org.xmlresolver:xmlresolver:5.2.2 \
+            -DoutputDirectory=/opt/saxon \
+            --quiet
+          # Classpath für nachfolgende Schritte bereitstellen
           SAXON_JARS=$(find /opt/saxon -name '*.jar' | tr '\n' ':')
-          echo "SAXON_JARS=$SAXON_JARS" >> $GITHUB_ENV
-          echo "Saxon JARs: $SAXON_JARS"
+          echo "SAXON_JARS=${SAXON_JARS}" >> $GITHUB_ENV
+          echo "Saxon JARs: ${SAXON_JARS}"
 
       # ----------------------------------------------------------
       # 4. DITA-OT herunterladen
