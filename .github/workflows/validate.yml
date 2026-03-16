@@ -72,15 +72,21 @@ jobs:
           java-version: 21
 
       # ----------------------------------------------------------
-      # 3. Saxon-HE herunterladen
-      #    Wird in /opt/saxon/ abgelegt und steht dann für alle
-      #    folgenden Schritte zur Verfügung.
+      # 3. Saxon-HE herunterladen (vollständiges Paket)
+      #    Saxon 12 benötigt die xmlresolver-Bibliothek als
+      #    Abhängigkeit. Wir laden daher das vollständige ZIP-Paket
+      #    von Saxonica herunter, das alle nötigen JARs enthält.
       # ----------------------------------------------------------
       - name: Saxon-HE herunterladen
         run: |
           mkdir -p /opt/saxon
-          curl -L -o /opt/saxon/saxon-he.jar \
-            "https://repo1.maven.org/maven2/net/sf/saxon/Saxon-HE/12.9/Saxon-HE-12.9.jar"
+          curl -L -o /tmp/saxon.zip \
+            "https://repo1.maven.org/maven2/net/sf/saxon/Saxon-HE/12.9/Saxon-HE-12.9.zip"
+          unzip -q /tmp/saxon.zip -d /opt/saxon
+          # Alle JAR-Dateien für den Classpath sammeln
+          SAXON_JARS=$(find /opt/saxon -name '*.jar' | tr '\n' ':')
+          echo "SAXON_JARS=$SAXON_JARS" >> $GITHUB_ENV
+          echo "Saxon JARs: $SAXON_JARS"
 
       # ----------------------------------------------------------
       # 4. DITA-OT herunterladen
@@ -212,7 +218,9 @@ jobs:
         if: steps.dita_dateien.outputs.dateien != ''
         run: |
           FEHLER=0
-          SAXON="java -jar /opt/saxon/saxon-he.jar"
+          # Vollständigen Classpath mit allen Saxon-JARs verwenden
+          # (inkl. xmlresolver, der von Saxon 12 benötigt wird)
+          SAXON="java -cp $SAXON_JARS net.sf.saxon.Transform"
           SKELETON="shared/schematron/iso_svrl_for_xslt2.xsl"
           REGELN="shared/schematron/dita_rules.sch"
           KOMPILIERT="/tmp/dita_rules_compiled.xsl"
