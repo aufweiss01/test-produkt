@@ -238,9 +238,14 @@ jobs:
 
           # Schritt a: Schematron-Regeln in XSLT kompilieren
           echo "Kompiliere Schematron-Regeln..."
-          $SAXON -s:"$REGELN" \
-                 -xsl:"$SKELETON" \
-                 -o:"$KOMPILIERT"
+          if ! $SAXON -s:"$REGELN" \
+                      -xsl:"$SKELETON" \
+                      -o:"$KOMPILIERT" 2>&1; then
+            echo "❌ Schematron-Kompilierung fehlgeschlagen."
+            exit 1
+          fi
+          echo "Kompilierung erfolgreich. Prüfe Output..."
+          ls -la "$KOMPILIERT" 2>&1 || echo "Kompiliertes XSLT nicht gefunden!"
 
           # Schritt b+c: Kompiliertes XSLT auf jede Datei anwenden
           for DATEI in ${{ steps.dita_dateien.outputs.dateien }}; do
