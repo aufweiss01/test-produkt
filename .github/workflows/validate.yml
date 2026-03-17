@@ -224,6 +224,11 @@ jobs:
         if: steps.dita_dateien.outputs.dateien != ''
         run: |
           FEHLER=0
+          # Debug: Arbeitsverzeichnis und Submodul-Inhalt prüfen
+          echo "Arbeitsverzeichnis: $(pwd)"
+          echo "Inhalt shared/schematron/:"
+          ls -la shared/schematron/ 2>&1 || echo "Ordner nicht gefunden"
+
           # Vollständigen Classpath mit allen Saxon-JARs verwenden
           # (inkl. xmlresolver, der von Saxon 12 benötigt wird)
           SAXON="java -cp $SAXON_JARS net.sf.saxon.Transform"
