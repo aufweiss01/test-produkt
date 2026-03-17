@@ -11,6 +11,7 @@
   
   <prolog>
     <metadata>
+      <audience type="user" job="operating" experiencelevel="general"/>
       <prodinfo>
         <prodname>Optiscope X200</prodname>
         <vrmlist><vrm version="1.0"/></vrmlist>
