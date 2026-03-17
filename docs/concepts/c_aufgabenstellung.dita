@@ -20,6 +20,7 @@
       <othermeta name="lifecycle-stage" content="operation"/>
       <othermeta name="status" content="draft"/>
       <othermeta name="assignee" content=""/>
+      <othermeta name="translation-status" content="in-translation"/>
     </metadata>
     <!-- Erstelldatum, Änderungsdatum und Autor werden nicht im Prolog geführt.
         Diese Metadaten werden automatisch aus dem Git-Verlauf ausgelesen. -->
