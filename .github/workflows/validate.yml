@@ -198,8 +198,7 @@ jobs:
                 net.sf.saxon.Transform \
                 -catalog:/opt/dita-ot/catalog-dita.xml \
                 -s:"$DATEI" \
-                -xsl:"$KOMPILIERT" 2>&1)
-              EXITCODE=$?
+                -xsl:"$KOMPILIERT" 2>&1); EXITCODE=$?
 
               if [ $EXITCODE -ne 0 ]; then
                 echo "⚠️  Saxon-Fehler bei: $DATEI"
