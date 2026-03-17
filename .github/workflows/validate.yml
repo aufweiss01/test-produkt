@@ -177,15 +177,6 @@ jobs:
           echo "| Datei | Ergebnis |" >> $GITHUB_STEP_SUMMARY
           echo "|-------|----------|" >> $GITHUB_STEP_SUMMARY
 
-          # TBX-Dateien als geparste XML-Dokumente an Saxon übergeben
-          # Das +-Präfix weist Saxon an, die Datei zu laden und als
-          # XML-Dokument-Node zu übergeben (statt als String-Pfad).
-          CUSTOMER_TBX="shared/customer_specific_termbase.tbx"
-          PROJECT_TBX="project_specific_termbase.tbx"
-          echo "Customer TBX: $CUSTOMER_TBX"
-          echo "Project TBX:  $PROJECT_TBX"
-          echo "Datei vorhanden: $(test -f $CUSTOMER_TBX && echo JA || echo NEIN)"
-
           echo "Kompiliere Schematron-Regeln..."
           if ! java \
                 -cp /opt/saxon/Saxon-HE-12.9.jar:/opt/saxon/xmlresolver-5.2.2.jar \
@@ -207,9 +198,7 @@ jobs:
                 net.sf.saxon.Transform \
                 -catalog:/opt/dita-ot/catalog-dita.xml \
                 -s:"$DATEI" \
-                -xsl:"$KOMPILIERT" \
-                "+customer-termbase=$CUSTOMER_TBX" \
-                "+project-termbase=$PROJECT_TBX" 2>&1)
+                -xsl:"$KOMPILIERT" 2>&1)
               EXITCODE=$?
 
               if [ $EXITCODE -ne 0 ]; then
@@ -221,9 +210,9 @@ jobs:
               fi
 
               echo "$ERGEBNIS" > /tmp/svrl_output.xml
-              FEHLER_TEXTE=$(python3 .github/scripts/parse_svrl.py \
+              FEHLER_TEXTE=$(python3 shared/scripts/parse_svrl.py \
                 /tmp/svrl_output.xml fehler 2>/dev/null)
-              WARNUNGS_TEXTE=$(python3 .github/scripts/parse_svrl.py \
+              WARNUNGS_TEXTE=$(python3 shared/scripts/parse_svrl.py \
                 /tmp/svrl_output.xml warnungen 2>/dev/null)
 
               if [ -n "$FEHLER_TEXTE" ]; then
@@ -266,3 +255,30 @@ jobs:
             echo "" >> $GITHUB_STEP_SUMMARY
             echo "> ✅ **Alle Dateien erfolgreich validiert.**" >> $GITHUB_STEP_SUMMARY
           fi
+
+      # ----------------------------------------------------------
+      # 8. Terminologieprüfung
+      #    Prüft DITA-Dateien auf verbotene Begriffe aus den
+      #    TBX-Terminologiedatenbanken. Verstösse sind Warnungen
+      #    und blockieren den Merge nicht.
+      #    Sprache: aktuell fest auf de-DE gesetzt.
+      #    TODO: Sprache aus xml:lang des Topics auslesen.
+      # ----------------------------------------------------------
+      - name: Terminologieprüfung
+        if: steps.dita_dateien.outputs.dateien != ''
+        run: |
+          DITA_DATEIEN=$(echo "${{ steps.dita_dateien.outputs.dateien }}" \
+            | tr ' ' '\n' | grep '\.dita$' | tr '\n' ' ')
+
+          if [ -z "$DITA_DATEIEN" ]; then
+            echo "Keine DITA-Dateien zu prüfen."
+            exit 0
+          fi
+
+          python3 shared/scripts/check_terminology.py \
+            --dita $DITA_DATEIEN \
+            --tbx shared/customer_specific_termbase.tbx \
+                  project_specific_termbase.tbx \
+            --lang de-DE \
+            --summary || true
+          # || true: Verstösse sind Warnungen, kein exit 1
