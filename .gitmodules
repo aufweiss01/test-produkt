@@ -1,3 +1,9 @@
 [submodule "shared"]
-	path = shared
-	url = https://github.com/aufweiss01/test-shared.git
+    path = shared
+    url = https://github.com/aufweiss01/test-shared.git
+    branch = develop
+    # WICHTIG: Während der Entwicklungsphase zeigt dieses Submodul
+    # auf den 'develop'-Branch von test-shared. Sobald test-shared
+    # stabil ist und in 'main' gemergt wurde, muss 'branch = develop'
+    # hier auf 'branch = main' geändert werden.
+    # Siehe Leitfaden: Abschnitt "Submodul-Strategie".
