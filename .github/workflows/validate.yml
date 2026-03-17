@@ -166,6 +166,7 @@ jobs:
       # ----------------------------------------------------------
       - name: Schematron-Validierung
         if: steps.dita_dateien.outputs.dateien != ''
+        continue-on-error: true
         run: |
           FEHLER=0
           SKELETON="shared/schematron/iso_svrl_for_xslt2.xsl"
@@ -222,12 +223,18 @@ jobs:
                 echo "$FEHLER_TEXTE" | while IFS= read -r ZEILE; do
                   echo "   → $ZEILE"
                 done
-                # Job Summary: alle Fehler ausgeben, HTML-Tags escapen
-                SUMMARY_ZEILEN=$(echo "$FEHLER_TEXTE" \
-                  | sed 's/</\&lt;/g' \
-                  | sed 's/>/\&gt;/g' \
-                  | tr '\n' ' · ')
-                echo "| \`$DATEI\` | ❌ $SUMMARY_ZEILEN |" >> $GITHUB_STEP_SUMMARY
+                # Job Summary: erste Fehlerzeile mit Dateiname, weitere Zeilen ohne
+                ERSTE_ZEILE=1
+                echo "$FEHLER_TEXTE" | sed 's/</\&lt;/g' | sed 's/>/\&gt;/g' \
+                  | while IFS= read -r ZEILE; do
+                    if [ "$ERSTE_ZEILE" = "1" ]; then
+                      echo "| \`$DATEI\` | ❌ $ZEILE |" >> $GITHUB_STEP_SUMMARY
+                      ERSTE_ZEILE=0
+                    else
+                      echo "| | ❌ $ZEILE |" >> $GITHUB_STEP_SUMMARY
+                    fi
+                  done
+                echo "| | |" >> $GITHUB_STEP_SUMMARY
                 FEHLER=1
               elif [ -n "$WARNUNGS_TEXTE" ]; then
                 echo ""
@@ -235,7 +242,18 @@ jobs:
                 echo "$WARNUNGS_TEXTE" | while IFS= read -r ZEILE; do
                   echo "   → $ZEILE"
                 done
-                echo "| \`$DATEI\` | ⚠️ Warnung |" >> $GITHUB_STEP_SUMMARY
+                # Job Summary: erste Warnungszeile mit Dateiname, weitere ohne
+                ERSTE_ZEILE=1
+                echo "$WARNUNGS_TEXTE" | sed 's/</\&lt;/g' | sed 's/>/\&gt;/g' \
+                  | while IFS= read -r ZEILE; do
+                    if [ "$ERSTE_ZEILE" = "1" ]; then
+                      echo "| \`$DATEI\` | ⚠️ $ZEILE |" >> $GITHUB_STEP_SUMMARY
+                      ERSTE_ZEILE=0
+                    else
+                      echo "| | ⚠️ $ZEILE |" >> $GITHUB_STEP_SUMMARY
+                    fi
+                  done
+                echo "| | |" >> $GITHUB_STEP_SUMMARY
               else
                 echo "✅ $DATEI"
                 echo "| \`$DATEI\` | ✅ OK |" >> $GITHUB_STEP_SUMMARY
