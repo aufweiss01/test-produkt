@@ -11,7 +11,7 @@ name: DITA Validierung
 # Pull Request nach develop oder main:
 #   → Pipeline läuft verbindlich.
 #   → Fehler blockieren den Merge (Branch Protection Rule
-#     muss in GitHub einmalig aktiviert werden – siehe unten).
+#     muss in GitHub einmalig aktiviert werden).
 # ============================================================
 
 on:
@@ -36,25 +36,10 @@ jobs:
       # ----------------------------------------------------------
       # 1. Repo auschecken (inkl. Submodul shared/)
       #
-      # Das Submodul (test-shared bzw. kunde-xyz-shared) ist ein
-      # privates Repository. GitHub Actions hat darauf keinen
-      # automatischen Zugriff. Der Personal Access Token (PAT)
-      # wird als Secret im Produktrepo hinterlegt und hier
-      # übergeben, damit das Submodul ausgecheckt werden kann.
-      #
-      # SECRET EINRICHTEN (einmalig pro Produktrepo):
-      #   GitHub → test-produkt → Settings →
-      #   Secrets and variables → Actions →
-      #   New repository secret
-      #   Name:  SUBMODULE_PAT
-      #   Value: Personal Access Token mit repo-Berechtigung
-      #
-      # PAT ERSTELLEN (einmalig pro GitHub-Account):
-      #   GitHub → Profilbild → Settings →
-      #   Developer settings →
-      #   Personal access tokens → Tokens (classic) →
-      #   Generate new token (classic)
-      #   Berechtigung: repo (alle Unterberechtigungen)
+      # Das Submodul ist ein privates Repository. Der PAT wird als
+      # Secret im Produktrepo hinterlegt (Name: SUBMODULE_PAT).
+      # Einrichtung: GitHub → Repo → Settings →
+      #   Secrets and variables → Actions → New repository secret
       # ----------------------------------------------------------
       - name: Repository auschecken
         uses: actions/checkout@v6
@@ -74,13 +59,11 @@ jobs:
       # ----------------------------------------------------------
       # 3. Saxon-HE und xmlresolver herunterladen
       #    Maven ist auf ubuntu-24.04 vorinstalliert und löst
-      #    Abhängigkeiten automatisch auf. Saxon 12 benötigt
-      #    xmlresolver als Laufzeitabhängigkeit.
+      #    Abhängigkeiten automatisch auf.
       # ----------------------------------------------------------
       - name: Saxon-HE herunterladen
         run: |
           mkdir -p /opt/saxon
-          # Saxon-HE und xmlresolver per Maven dependency:copy laden
           mvn dependency:copy \
             -Dartifact=net.sf.saxon:Saxon-HE:12.9 \
             -DoutputDirectory=/opt/saxon \
@@ -89,10 +72,6 @@ jobs:
             -Dartifact=org.xmlresolver:xmlresolver:5.2.2 \
             -DoutputDirectory=/opt/saxon \
             --quiet
-          # Classpath für nachfolgende Schritte bereitstellen
-          SAXON_JARS=$(find /opt/saxon -name '*.jar' | tr '\n' ':')
-          echo "SAXON_JARS=${SAXON_JARS}" >> $GITHUB_ENV
-          echo "Saxon JARs: ${SAXON_JARS}"
 
       # ----------------------------------------------------------
       # 4. DITA-OT herunterladen
@@ -106,47 +85,29 @@ jobs:
           mv /opt/dita-ot-4.4 /opt/dita-ot
 
       # ----------------------------------------------------------
-      # 6. DITA-Dateien ermitteln
+      # 5. DITA-Dateien ermitteln
       #
-      # Bei Pull Request:
-      #   Nur geänderte Dateien prüfen (git diff gegen Basis-Branch).
-      #   Zuverlässig, weil origin/[basis] immer vorhanden ist.
-      #
-      # Bei Push:
-      #   Normalfall: git diff gegen Merge-Basis (Abzweigpunkt
-      #   des Branches von develop). Liefert genau die Dateien,
-      #   die auf diesem Branch geändert wurden.
-      #
-      #   Fallback: Wenn keine Merge-Basis gefunden wird (z.B.
-      #   erster Commit auf einem Branch ohne Vorgänger, oder
-      #   Branch Protection Rule nicht aktiv), werden ALLE
-      #   DITA-Dateien im Repo geprüft. Lieber einmal zu viel
-      #   prüfen als eine Lücke riskieren.
-      #   Dieser Fall sollte im Normalbetrieb nie eintreten,
-      #   da direkte Pushes auf develop und main durch Branch
-      #   Protection Rules blockiert sind.
+      # Bei Pull Request: nur geänderte Dateien prüfen.
+      # Bei Push (Normalfall): git diff gegen Merge-Basis.
+      # Bei Push (Fallback): alle DITA-Dateien, wenn keine
+      #   Merge-Basis gefunden wird (sicherer Fallback).
       # ----------------------------------------------------------
       - name: DITA-Dateien ermitteln
         id: dita_dateien
         run: |
           if [ "${{ github.event_name }}" = "pull_request" ]; then
-            # Pull Request: geänderte Dateien gegen Basis-Branch
             DATEIEN=$(git diff --name-only \
               origin/${{ github.base_ref }}...HEAD \
               -- '*.dita' '*.ditamap' | tr '\n' ' ')
           else
-            # Push: Merge-Basis berechnen
             git fetch origin develop --depth=50 2>/dev/null || true
             BASE=$(git merge-base HEAD origin/develop 2>/dev/null || echo "")
 
             if [ -n "$BASE" ]; then
-              # Normalfall: nur auf diesem Branch geänderte Dateien
               DATEIEN=$(git diff --name-only "$BASE" HEAD \
                 -- '*.dita' '*.ditamap' | tr '\n' ' ')
             else
-              # Fallback: alle DITA-Dateien prüfen
-              echo "HINWEIS: Keine Merge-Basis gefunden." \
-                   "Prüfe alle DITA-Dateien im Repo (sicherer Fallback)."
+              echo "HINWEIS: Keine Merge-Basis gefunden – prüfe alle Dateien (Fallback)."
               DATEIEN=$(find . \( -name '*.dita' -o -name '*.ditamap' \) \
                 | grep -v '^\./\.git' \
                 | tr '\n' ' ')
@@ -156,22 +117,10 @@ jobs:
           echo "Gefundene DITA-Dateien: $DATEIEN"
 
       # ----------------------------------------------------------
-      # 7. DTD-Validierung mit xmllint
-      #    Prüft jede geänderte Datei gegen die DITA-DTD.
-      #    Der XML-Katalog von DITA-OT löst die DTD-Referenzen auf.
-      #    WICHTIG: xmllint liest den Katalog über die Umgebungs-
-      #    variable SGML_CATALOG_FILES, nicht über --catalogs.
-      # ----------------------------------------------------------
-      # ----------------------------------------------------------
-      # 7. DTD-Validierung mit DITA-OT
-      #    DITA-OT versteht die DITA 1.3 DTDs vollständig,
-      #    einschließlich des SVG-Domain-Moduls. xmllint ist
-      #    dafür ungeeignet (Entity-Referenzschleifen in
-      #    svgDomain.mod).
-      #    Der Befehl --format=dita führt nur Validierung durch,
-      #    ohne Publishing-Output zu erzeugen.
-      #    Eine Map wird als Einstiegspunkt benötigt – wir nutzen
-      #    die Haupt-Map des Projekts.
+      # 6. DTD-Validierung mit DITA-OT
+      #    DITA-OT versteht die DITA 1.3 DTDs vollständig.
+      #    Validierung läuft über Maps als Einstiegspunkt –
+      #    Topics werden dabei automatisch mitvalidiert.
       # ----------------------------------------------------------
       - name: DTD-Validierung
         if: steps.dita_dateien.outputs.dateien != ''
@@ -179,9 +128,6 @@ jobs:
           FEHLER=0
           DITA_OT="/opt/dita-ot/bin/dita"
 
-          # DITA-OT validiert immer über eine Map als Einstiegspunkt.
-          # Alle Maps im Repo ermitteln und einzeln validieren.
-          # Topics werden dabei automatisch mitvalidiert.
           MAPS=$(find . -name '*.ditamap' \
             | grep -v '^\./\.git' \
             | grep -v 'relationship_table' \
@@ -203,7 +149,6 @@ jobs:
           if [ $FEHLER -ne 0 ]; then
             echo ""
             echo "❌ DTD-Validierung fehlgeschlagen."
-            echo "Bitte die oben angezeigten Fehler korrigieren."
             exit 1
           else
             echo ""
@@ -211,14 +156,13 @@ jobs:
           fi
 
       # ----------------------------------------------------------
-      # 8. Schematron-Validierung mit Saxon
-      #    Dreistufige Pipeline:
-      #    a) Schematron → XSLT kompilieren (iso_svrl_for_xslt2.xsl)
-      #    b) XSLT auf jede DITA-Datei anwenden → SVRL-Ergebnis
-      #    c) Fehler aus SVRL extrahieren und lesbar ausgeben
+      # 7. Schematron-Validierung mit Saxon
+      #    a) Schematron → XSLT kompilieren
+      #    b) XSLT auf jede DITA-Datei anwenden → SVRL
+      #    c) Fehler per parse_svrl.py aus SVRL extrahieren
       #
-      #    Ergebnisse werden zusätzlich als GitHub Job Summary
-      #    ausgegeben (sichtbar unter Actions → Job → Summary).
+      #    Ergebnisse erscheinen als GitHub Job Summary
+      #    (Actions → Lauf → Summary).
       # ----------------------------------------------------------
       - name: Schematron-Validierung
         if: steps.dita_dateien.outputs.dateien != ''
@@ -228,13 +172,11 @@ jobs:
           REGELN="shared/schematron/dita_rules.sch"
           KOMPILIERT="/tmp/dita_rules_compiled.xsl"
 
-          # Job Summary initialisieren
           echo "## Schematron-Validierung" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "| Datei | Ergebnis |" >> $GITHUB_STEP_SUMMARY
           echo "|-------|----------|" >> $GITHUB_STEP_SUMMARY
 
-          # Schritt a: Schematron-Regeln in XSLT kompilieren
           echo "Kompiliere Schematron-Regeln..."
           if ! java \
                 -cp /opt/saxon/Saxon-HE-12.9.jar:/opt/saxon/xmlresolver-5.2.2.jar \
@@ -249,7 +191,6 @@ jobs:
           fi
           echo "✅ Kompilierung erfolgreich."
 
-          # Schritt b+c: Kompiliertes XSLT auf jede Datei anwenden
           for DATEI in ${{ steps.dita_dateien.outputs.dateien }}; do
             if [ -f "$DATEI" ] && [[ "$DATEI" == *.dita ]]; then
               ERGEBNIS=$(java \
@@ -260,7 +201,6 @@ jobs:
                 -xsl:"$KOMPILIERT" 2>&1)
               EXITCODE=$?
 
-              # Saxon-Fehler (technisch, nicht inhaltlich)
               if [ $EXITCODE -ne 0 ]; then
                 echo "⚠️  Saxon-Fehler bei: $DATEI"
                 echo "$ERGEBNIS"
@@ -269,20 +209,11 @@ jobs:
                 continue
               fi
 
-              # Fehlermeldungen aus SVRL extrahieren
               echo "$ERGEBNIS" > /tmp/svrl_output.xml
-              FEHLER_TEXTE=$(python3 -c \
-                'import xml.etree.ElementTree as ET
-ns = dict(svrl="http://purl.oclc.org/dsdl/svrl")
-tree = ET.parse("/tmp/svrl_output.xml")
-[print(" ".join((el.text or "").split())) for el in tree.getroot().findall(".//svrl:failed-assert/svrl:text", ns) if (el.text or "").strip()]' \
-                2>/dev/null)
-              WARNUNGS_TEXTE=$(python3 -c \
-                'import xml.etree.ElementTree as ET
-ns = dict(svrl="http://purl.oclc.org/dsdl/svrl")
-tree = ET.parse("/tmp/svrl_output.xml")
-[print(" ".join((el.text or "").split())) for el in tree.getroot().findall(".//svrl:successful-report/svrl:text", ns) if (el.text or "").strip()]' \
-                2>/dev/null)
+              FEHLER_TEXTE=$(python3 .github/scripts/parse_svrl.py \
+                /tmp/svrl_output.xml fehler 2>/dev/null)
+              WARNUNGS_TEXTE=$(python3 .github/scripts/parse_svrl.py \
+                /tmp/svrl_output.xml warnungen 2>/dev/null)
 
               if [ -n "$FEHLER_TEXTE" ]; then
                 echo ""
@@ -290,7 +221,6 @@ tree = ET.parse("/tmp/svrl_output.xml")
                 echo "$FEHLER_TEXTE" | while IFS= read -r ZEILE; do
                   echo "   → $ZEILE"
                 done
-                # Job Summary
                 ZUSAMMENFASSUNG=$(echo "$FEHLER_TEXTE" | head -1)
                 echo "| \`$DATEI\` | ❌ $ZUSAMMENFASSUNG |" >> $GITHUB_STEP_SUMMARY
                 FEHLER=1
@@ -308,14 +238,12 @@ tree = ET.parse("/tmp/svrl_output.xml")
             fi
           done
 
-          # Abschlussmeldung
           if [ $FEHLER -ne 0 ]; then
             echo ""
             echo "❌ Schematron-Validierung fehlgeschlagen."
             echo "Bitte die oben angezeigten Fehler korrigieren."
             echo "" >> $GITHUB_STEP_SUMMARY
-            echo "> ❌ **Validierung fehlgeschlagen.** Bitte die Fehler korrigieren." \
-              >> $GITHUB_STEP_SUMMARY
+            echo "> ❌ **Validierung fehlgeschlagen.**" >> $GITHUB_STEP_SUMMARY
             exit 1
           else
             echo ""
@@ -323,22 +251,3 @@ tree = ET.parse("/tmp/svrl_output.xml")
             echo "" >> $GITHUB_STEP_SUMMARY
             echo "> ✅ **Alle Dateien erfolgreich validiert.**" >> $GITHUB_STEP_SUMMARY
           fi
-
-# ============================================================
-# BRANCH PROTECTION RULE IN GITHUB EINRICHTEN
-# ============================================================
-# Damit Pull Requests bei Fehlern blockiert werden, muss in
-# GitHub einmalig eine Branch Protection Rule aktiviert werden:
-#
-# 1. GitHub → test-produkt → Settings → Branches
-# 2. "Add branch protection rule" klicken
-# 3. Branch name pattern: develop
-# 4. Haken setzen bei:
-#    ✅ Require status checks to pass before merging
-#    ✅ Require branches to be up to date before merging
-#    Unter "Status checks": "validierung" suchen und auswählen
-# 5. Speichern – dasselbe für "main" wiederholen
-#
-# Hinweis: Der Status-Check "validierung" erscheint in der
-# Suche erst, nachdem die Pipeline mindestens einmal gelaufen ist.
-# ============================================================
