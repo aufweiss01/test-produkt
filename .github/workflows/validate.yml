@@ -238,9 +238,10 @@ jobs:
 
           # Schritt a: Schematron-Regeln in XSLT kompilieren
           echo "Kompiliere Schematron-Regeln..."
-          if ! $SAXON -s:"$REGELN" \
-                      -xsl:"$SKELETON" \
-                      -o:"$KOMPILIERT" 2>&1; then
+          SAXON_CMD="java -cp /opt/saxon/Saxon-HE-12.9.jar:/opt/saxon/xmlresolver-5.2.2.jar net.sf.saxon.Transform"
+          if ! $SAXON_CMD -s:"$REGELN" \
+                          -xsl:"$SKELETON" \
+                          -o:"$KOMPILIERT" 2>&1; then
             echo "❌ Schematron-Kompilierung fehlgeschlagen."
             exit 1
           fi
@@ -248,11 +249,15 @@ jobs:
           ls -la "$KOMPILIERT" 2>&1 || echo "Kompiliertes XSLT nicht gefunden!"
 
           # Schritt b+c: Kompiliertes XSLT auf jede Datei anwenden
+          # Saxon explizit mit bekannten JAR-Pfaden aufrufen
+          SAXON_CMD="java -cp /opt/saxon/Saxon-HE-12.9.jar:/opt/saxon/xmlresolver-5.2.2.jar net.sf.saxon.Transform"
+          echo "Saxon-Befehl: $SAXON_CMD"
+
           for DATEI in ${{ steps.dita_dateien.outputs.dateien }}; do
             if [ -f "$DATEI" ] && [[ "$DATEI" == *.dita ]]; then
               echo "Prüfe: $DATEI"
-              ERGEBNIS=$($SAXON -s:"$DATEI" \
-                                -xsl:"$KOMPILIERT" 2>&1)
+              ERGEBNIS=$($SAXON_CMD -s:"$DATEI" \
+                                    -xsl:"$KOMPILIERT" 2>&1)
               EXITCODE=$?
 
               # Saxon-Exitcode prüfen (2 = Transformation fehlgeschlagen)
