@@ -257,6 +257,7 @@ jobs:
           echo "Führe Saxon direkt aus..."
           java -cp /opt/saxon/Saxon-HE-12.9.jar:/opt/saxon/xmlresolver-5.2.2.jar \
             net.sf.saxon.Transform \
+            -catalog:/opt/dita-ot/catalog-dita.xml \
             -s:"$TEST_DATEI" \
             -xsl:"$KOMPILIERT"
           echo "Saxon Exit Code: $?"
