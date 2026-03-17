@@ -180,6 +180,9 @@ jobs:
           # TBX-Pfade für Terminologieprüfung (absolut, für Saxon doc())
           CUSTOMER_TBX="file://$(pwd)/shared/customer_specific_termbase.tbx"
           PROJECT_TBX="file://$(pwd)/project_specific_termbase.tbx"
+          echo "Customer TBX: $CUSTOMER_TBX"
+          echo "Project TBX:  $PROJECT_TBX"
+          echo "Datei vorhanden: $(test -f shared/customer_specific_termbase.tbx && echo JA || echo NEIN)"
 
           echo "Kompiliere Schematron-Regeln..."
           if ! java \
