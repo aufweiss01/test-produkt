@@ -215,26 +215,24 @@ jobs:
       #    Dreistufige Pipeline:
       #    a) Schematron → XSLT kompilieren (iso_svrl_for_xslt2.xsl)
       #    b) XSLT auf jede DITA-Datei anwenden → SVRL-Ergebnis
-      #    c) SVRL auf Fehler prüfen
+      #    c) Fehler aus SVRL extrahieren und lesbar ausgeben
       #
-      #    Skeleton-Dateien liegen in shared/schematron/
-      #    Schematron-Regeln liegen in shared/schematron/dita_rules.sch
+      #    Ergebnisse werden zusätzlich als GitHub Job Summary
+      #    ausgegeben (sichtbar unter Actions → Job → Summary).
       # ----------------------------------------------------------
       - name: Schematron-Validierung
         if: steps.dita_dateien.outputs.dateien != ''
         run: |
           FEHLER=0
-          # Debug: Arbeitsverzeichnis und Submodul-Inhalt prüfen
-          echo "Arbeitsverzeichnis: $(pwd)"
-          echo "Inhalt shared/schematron/:"
-          ls -la shared/schematron/ 2>&1 || echo "Ordner nicht gefunden"
-
-          # Vollständigen Classpath mit allen Saxon-JARs verwenden
-          # (inkl. xmlresolver, der von Saxon 12 benötigt wird)
-          SAXON="java -cp $SAXON_JARS net.sf.saxon.Transform"
           SKELETON="shared/schematron/iso_svrl_for_xslt2.xsl"
           REGELN="shared/schematron/dita_rules.sch"
           KOMPILIERT="/tmp/dita_rules_compiled.xsl"
+
+          # Job Summary initialisieren
+          echo "## Schematron-Validierung" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Datei | Ergebnis |" >> $GITHUB_STEP_SUMMARY
+          echo "|-------|----------|" >> $GITHUB_STEP_SUMMARY
 
           # Schritt a: Schematron-Regeln in XSLT kompilieren
           echo "Kompiliere Schematron-Regeln..."
@@ -246,16 +244,14 @@ jobs:
                 -xsl:"$SKELETON" \
                 -o:"$KOMPILIERT" 2>&1; then
             echo "❌ Schematron-Kompilierung fehlgeschlagen."
+            echo "| – | ❌ Kompilierung fehlgeschlagen |" >> $GITHUB_STEP_SUMMARY
             exit 1
           fi
-          echo "Kompilierung erfolgreich. Prüfe Output..."
-          ls -la "$KOMPILIERT" 2>&1 || echo "Kompiliertes XSLT nicht gefunden!"
+          echo "✅ Kompilierung erfolgreich."
 
           # Schritt b+c: Kompiliertes XSLT auf jede Datei anwenden
-          # -catalog: DITA-OT-Katalog für DTD-Auflösung erforderlich
           for DATEI in ${{ steps.dita_dateien.outputs.dateien }}; do
             if [ -f "$DATEI" ] && [[ "$DATEI" == *.dita ]]; then
-              echo "Prüfe: $DATEI"
               ERGEBNIS=$(java \
                 -cp /opt/saxon/Saxon-HE-12.9.jar:/opt/saxon/xmlresolver-5.2.2.jar \
                 net.sf.saxon.Transform \
@@ -264,37 +260,70 @@ jobs:
                 -xsl:"$KOMPILIERT" 2>&1)
               EXITCODE=$?
 
-              # Saxon-Exitcode prüfen
+              # Saxon-Fehler (technisch, nicht inhaltlich)
               if [ $EXITCODE -ne 0 ]; then
-                echo "Saxon-Fehler (exit $EXITCODE) bei: $DATEI"
+                echo "⚠️  Saxon-Fehler bei: $DATEI"
                 echo "$ERGEBNIS"
+                echo "| \`$DATEI\` | ⚠️ Saxon-Fehler |" >> $GITHUB_STEP_SUMMARY
                 FEHLER=1
                 continue
               fi
 
-              # Auf fehlgeschlagene Assertions prüfen (role="error")
-              if echo "$ERGEBNIS" | grep -q "failed-assert"; then
-                echo "$ERGEBNIS"
-                echo "SCHEMATRON-FEHLER in: $DATEI"
-                FEHLER=1
-              fi
+              # Fehlermeldungen aus SVRL extrahieren (lesbar)
+              FEHLER_TEXTE=$(echo "$ERGEBNIS" \
+                | grep -A5 'failed-assert' \
+                | grep '<svrl:text>' \
+                | sed 's|.*<svrl:text>||' \
+                | sed 's|</svrl:text>.*||' \
+                | sed 's/^[[:space:]]*//' \
+                | sed '/^$/d')
 
-              # Warnungen anzeigen (role="warning"), aber nicht blockieren
-              if echo "$ERGEBNIS" | grep -q "successful-report"; then
-                echo "SCHEMATRON-WARNUNG in: $DATEI"
-                echo "$ERGEBNIS" | grep -A2 "successful-report"
+              WARNUNGS_TEXTE=$(echo "$ERGEBNIS" \
+                | grep -A5 'successful-report' \
+                | grep '<svrl:text>' \
+                | sed 's|.*<svrl:text>||' \
+                | sed 's|</svrl:text>.*||' \
+                | sed 's/^[[:space:]]*//' \
+                | sed '/^$/d')
+
+              if [ -n "$FEHLER_TEXTE" ]; then
+                echo ""
+                echo "❌ $DATEI"
+                echo "$FEHLER_TEXTE" | while IFS= read -r ZEILE; do
+                  echo "   → $ZEILE"
+                done
+                # Job Summary
+                ZUSAMMENFASSUNG=$(echo "$FEHLER_TEXTE" | head -1)
+                echo "| \`$DATEI\` | ❌ $ZUSAMMENFASSUNG |" >> $GITHUB_STEP_SUMMARY
+                FEHLER=1
+              elif [ -n "$WARNUNGS_TEXTE" ]; then
+                echo ""
+                echo "⚠️  $DATEI"
+                echo "$WARNUNGS_TEXTE" | while IFS= read -r ZEILE; do
+                  echo "   → $ZEILE"
+                done
+                echo "| \`$DATEI\` | ⚠️ Warnung |" >> $GITHUB_STEP_SUMMARY
+              else
+                echo "✅ $DATEI"
+                echo "| \`$DATEI\` | ✅ OK |" >> $GITHUB_STEP_SUMMARY
               fi
             fi
           done
 
+          # Abschlussmeldung
           if [ $FEHLER -ne 0 ]; then
             echo ""
             echo "❌ Schematron-Validierung fehlgeschlagen."
             echo "Bitte die oben angezeigten Fehler korrigieren."
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "> ❌ **Validierung fehlgeschlagen.** Bitte die Fehler korrigieren." \
+              >> $GITHUB_STEP_SUMMARY
             exit 1
           else
             echo ""
             echo "✅ Schematron-Validierung erfolgreich."
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "> ✅ **Alle Dateien erfolgreich validiert.**" >> $GITHUB_STEP_SUMMARY
           fi
 
 # ============================================================
