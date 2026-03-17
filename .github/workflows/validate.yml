@@ -253,6 +253,15 @@ jobs:
               echo "Prüfe: $DATEI"
               ERGEBNIS=$($SAXON -s:"$DATEI" \
                                 -xsl:"$KOMPILIERT" 2>&1)
+              EXITCODE=$?
+
+              # Saxon-Exitcode prüfen (2 = Transformation fehlgeschlagen)
+              if [ $EXITCODE -ne 0 ]; then
+                echo "Saxon-Fehler (exit $EXITCODE) bei: $DATEI"
+                echo "$ERGEBNIS"
+                FEHLER=1
+                continue
+              fi
 
               # Auf fehlgeschlagene Assertions prüfen (role="error")
               if echo "$ERGEBNIS" | grep -q "failed-assert"; then
