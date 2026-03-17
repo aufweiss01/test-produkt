@@ -269,34 +269,26 @@ jobs:
                 continue
               fi
 
-              # Fehlermeldungen aus SVRL extrahieren (Python für mehrzeilige Texte)
+              # Fehlermeldungen aus SVRL extrahieren
+              # Python inline – kein f-String, keine geschweiften Klammern
+              # die YAML als Template interpretieren könnte
               echo "$ERGEBNIS" > /tmp/svrl_output.xml
-
-              # Python-Skript in Datei schreiben (vermeidet YAML-Syntaxprobleme)
-              cat > /tmp/parse_svrl.py << 'PYEOF'
-import xml.etree.ElementTree as ET
-import sys
-
+              FEHLER_TEXTE=$(python3 -c "
+import xml.etree.ElementTree as ET, sys
 ns = {'svrl': 'http://purl.oclc.org/dsdl/svrl'}
-modus = sys.argv[1] if len(sys.argv) > 1 else 'fehler'
-
-try:
-    tree = ET.parse('/tmp/svrl_output.xml')
-    root = tree.getroot()
-    if modus == 'fehler':
-        elemente = root.findall('.//svrl:failed-assert/svrl:text', ns)
-    else:
-        elemente = root.findall('.//svrl:successful-report/svrl:text', ns)
-    for el in elemente:
-        text = ' '.join((el.text or '').split())
-        if text:
-            print(text)
-except Exception as e:
-    print('Parse-Fehler: ' + str(e), file=sys.stderr)
-PYEOF
-
-              FEHLER_TEXTE=$(python3 /tmp/parse_svrl.py fehler 2>&1)
-              WARNUNGS_TEXTE=$(python3 /tmp/parse_svrl.py warnungen 2>&1)
+tree = ET.parse('/tmp/svrl_output.xml')
+for el in tree.getroot().findall('.//svrl:failed-assert/svrl:text', ns):
+    t = ' '.join((el.text or '').split())
+    if t: print(t)
+" 2>/dev/null)
+              WARNUNGS_TEXTE=$(python3 -c "
+import xml.etree.ElementTree as ET, sys
+ns = {'svrl': 'http://purl.oclc.org/dsdl/svrl'}
+tree = ET.parse('/tmp/svrl_output.xml')
+for el in tree.getroot().findall('.//svrl:successful-report/svrl:text', ns):
+    t = ' '.join((el.text or '').split())
+    if t: print(t)
+" 2>/dev/null)
 
               if [ -n "$FEHLER_TEXTE" ]; then
                 echo ""
