@@ -270,20 +270,19 @@ jobs:
               fi
 
               # Fehlermeldungen aus SVRL extrahieren
-              # Python inline – kein f-String, keine geschweiften Klammern
-              # die YAML als Template interpretieren könnte
+              # Python inline – Dictionary-Literal vermieden (YAML-Konflikt)
               echo "$ERGEBNIS" > /tmp/svrl_output.xml
               FEHLER_TEXTE=$(python3 -c "
-import xml.etree.ElementTree as ET, sys
-ns = {'svrl': 'http://purl.oclc.org/dsdl/svrl'}
+import xml.etree.ElementTree as ET
+ns = dict(svrl='http://purl.oclc.org/dsdl/svrl')
 tree = ET.parse('/tmp/svrl_output.xml')
 for el in tree.getroot().findall('.//svrl:failed-assert/svrl:text', ns):
     t = ' '.join((el.text or '').split())
     if t: print(t)
 " 2>/dev/null)
               WARNUNGS_TEXTE=$(python3 -c "
-import xml.etree.ElementTree as ET, sys
-ns = {'svrl': 'http://purl.oclc.org/dsdl/svrl'}
+import xml.etree.ElementTree as ET
+ns = dict(svrl='http://purl.oclc.org/dsdl/svrl')
 tree = ET.parse('/tmp/svrl_output.xml')
 for el in tree.getroot().findall('.//svrl:successful-report/svrl:text', ns):
     t = ' '.join((el.text or '').split())
