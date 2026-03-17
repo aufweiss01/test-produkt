@@ -269,22 +269,36 @@ jobs:
                 continue
               fi
 
-              # Fehlermeldungen aus SVRL extrahieren (lesbar)
-              FEHLER_TEXTE=$(echo "$ERGEBNIS" \
-                | grep -A5 'failed-assert' \
-                | grep '<svrl:text>' \
-                | sed 's|.*<svrl:text>||' \
-                | sed 's|</svrl:text>.*||' \
-                | sed 's/^[[:space:]]*//' \
-                | sed '/^$/d')
+              # Fehlermeldungen aus SVRL extrahieren (Python für mehrzeilige Texte)
+              echo "$ERGEBNIS" > /tmp/svrl_output.xml
 
-              WARNUNGS_TEXTE=$(echo "$ERGEBNIS" \
-                | grep -A5 'successful-report' \
-                | grep '<svrl:text>' \
-                | sed 's|.*<svrl:text>||' \
-                | sed 's|</svrl:text>.*||' \
-                | sed 's/^[[:space:]]*//' \
-                | sed '/^$/d')
+              FEHLER_TEXTE=$(python3 -c "
+import xml.etree.ElementTree as ET, sys
+ns = {'svrl': 'http://purl.oclc.org/dsdl/svrl'}
+try:
+    tree = ET.parse('/tmp/svrl_output.xml')
+    root = tree.getroot()
+    fehler = root.findall('.//svrl:failed-assert/svrl:text', ns)
+    for f in fehler:
+        text = ' '.join((f.text or '').split())
+        print(text)
+except Exception as e:
+    print(f'Parse-Fehler: {e}', file=sys.stderr)
+" 2>&1)
+
+              WARNUNGS_TEXTE=$(python3 -c "
+import xml.etree.ElementTree as ET, sys
+ns = {'svrl': 'http://purl.oclc.org/dsdl/svrl'}
+try:
+    tree = ET.parse('/tmp/svrl_output.xml')
+    root = tree.getroot()
+    warnungen = root.findall('.//svrl:successful-report/svrl:text', ns)
+    for w in warnungen:
+        text = ' '.join((w.text or '').split())
+        print(text)
+except Exception as e:
+    print(f'Parse-Fehler: {e}', file=sys.stderr)
+" 2>&1)
 
               if [ -n "$FEHLER_TEXTE" ]; then
                 echo ""
