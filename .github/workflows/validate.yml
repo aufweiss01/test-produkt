@@ -250,6 +250,18 @@ jobs:
           echo "Kompilierung erfolgreich. Prüfe Output..."
           ls -la "$KOMPILIERT" 2>&1 || echo "Kompiliertes XSLT nicht gefunden!"
 
+          # DEBUG: Isolierter Test mit der ersten DITA-Datei
+          echo "=== DEBUG TEST ==="
+          TEST_DATEI="./docs/references/ref_beispiel.dita"
+          echo "Datei vorhanden: $(test -f $TEST_DATEI && echo JA || echo NEIN)"
+          echo "Führe Saxon direkt aus..."
+          java -cp /opt/saxon/Saxon-HE-12.9.jar:/opt/saxon/xmlresolver-5.2.2.jar \
+            net.sf.saxon.Transform \
+            -s:"$TEST_DATEI" \
+            -xsl:"$KOMPILIERT"
+          echo "Saxon Exit Code: $?"
+          echo "=== ENDE DEBUG ==="
+
           # Schritt b+c: Kompiliertes XSLT auf jede Datei anwenden
           # Saxon direkt aufrufen (keine Variable, vermeidet Shell-Expansionsprobleme)
           for DATEI in ${{ steps.dita_dateien.outputs.dateien }}; do
