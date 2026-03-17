@@ -11,14 +11,13 @@
   
   <prolog>
     <metadata>
-      <audience type="user" job="operating" experiencelevel="general"/>
       <prodinfo>
         <prodname>OptiScope X200</prodname>
         <vrmlist><vrm version="1.0"/></vrmlist>
       </prodinfo>
       <othermeta name="component" content="Navigationsschnittstelle"/>
       <othermeta name="lifecycle-stage" content="operation"/>
-      <othermeta name="status" content="fertig"/>
+      <othermeta name="status" content="draft"/>
       <othermeta name="assignee" content=""/>
     </metadata>
     <!-- Erstelldatum, Änderungsdatum und Autor werden nicht im Prolog geführt.

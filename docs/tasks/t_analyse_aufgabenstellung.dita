@@ -13,7 +13,7 @@
     <metadata>
       <audience type="user" job="operating" experiencelevel="general"/>
       <prodinfo>
-        <prodname>OptiScope X200</prodname>
+        <prodname>Optiscope X200</prodname>
         <vrmlist><vrm version="1.0"/></vrmlist>
       </prodinfo>
       <othermeta name="component" content="Navigationsschnittstelle"/>
@@ -28,7 +28,7 @@
   <taskbody>
 
     <context>
-      <p>Vor der Dokumentation der <term>Navigationsschnittstelle</term> analysieren
+      <p>Vor der Dokumentation der <term>Navigationsschnittstelle</term> bzw. das <term>Interface</term> analysieren
       Sie die Aufgabenstellung sorgfältig.</p>
 
       <note type="warning"
