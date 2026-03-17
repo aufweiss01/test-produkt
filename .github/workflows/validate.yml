@@ -191,7 +191,9 @@ jobs:
           fi
           echo "✅ Kompilierung erfolgreich."
 
-          for DATEI in ${{ steps.dita_dateien.outputs.dateien }}; do
+          DATEIEN_LISTE="${{ steps.dita_dateien.outputs.dateien }}"
+
+          for DATEI in $DATEIEN_LISTE; do
             if [ -f "$DATEI" ] && [[ "$DATEI" == *.dita ]]; then
               ERGEBNIS=$(java \
                 -cp /opt/saxon/Saxon-HE-12.9.jar:/opt/saxon/xmlresolver-5.2.2.jar \
