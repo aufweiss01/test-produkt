@@ -14,7 +14,6 @@
        scope="external": Pflichtangabe für Links außerhalb des Projekts;
        verhindert, dass DITA-OT versucht, die Seite lokal aufzulösen.
        Referenziert aus: tasks/t_recherche.dita -->
-  <!-- Hier ein kurzer Kommentar für die Linkprüfung -->
   </keydef>
 
 </map>
