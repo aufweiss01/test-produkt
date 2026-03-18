@@ -109,7 +109,7 @@ jobs:
             else
               echo "HINWEIS: Keine Merge-Basis gefunden – prüfe alle Dateien (Fallback)."
               DATEIEN=$(find . \( -name '*.dita' -o -name '*.ditamap' \) \
-                | grep -v '^\./\.git' \
+                | grep -v '^\./.git' \
                 | tr '\n' ' ')
             fi
           fi
@@ -121,6 +121,7 @@ jobs:
       #    DITA-OT versteht die DITA 1.3 DTDs vollständig.
       #    Validierung läuft über Maps als Einstiegspunkt –
       #    Topics werden dabei automatisch mitvalidiert.
+      #    Deckt auch defekte conref- und keyref-Verweise ab.
       # ----------------------------------------------------------
       - name: DTD-Validierung
         if: steps.dita_dateien.outputs.dateien != ''
@@ -129,7 +130,7 @@ jobs:
           DITA_OT="/opt/dita-ot/bin/dita"
 
           MAPS=$(find . -name '*.ditamap' \
-            | grep -v '^\./\.git' \
+            | grep -v '^\./.git' \
             | grep -v 'relationship_table' \
             | tr '\n' ' ')
 
@@ -223,9 +224,8 @@ jobs:
                 echo "$FEHLER_TEXTE" | while IFS= read -r ZEILE; do
                   echo "   → $ZEILE"
                 done
-                # Job Summary: erste Fehlerzeile mit Dateiname, weitere Zeilen ohne
                 ERSTE_ZEILE=1
-                echo "$FEHLER_TEXTE" | sed 's/</\&lt;/g' | sed 's/>/\&gt;/g' \
+                echo "$FEHLER_TEXTE" | sed 's/^</\&lt;/g' | sed 's/^>/\&gt;/g' \
                   | while IFS= read -r ZEILE; do
                     if [ "$ERSTE_ZEILE" = "1" ]; then
                       echo "| \`$DATEI\` | ❌ $ZEILE |" >> $GITHUB_STEP_SUMMARY
@@ -242,9 +242,8 @@ jobs:
                 echo "$WARNUNGS_TEXTE" | while IFS= read -r ZEILE; do
                   echo "   → $ZEILE"
                 done
-                # Job Summary: erste Warnungszeile mit Dateiname, weitere ohne
                 ERSTE_ZEILE=1
-                echo "$WARNUNGS_TEXTE" | sed 's/</\&lt;/g' | sed 's/>/\&gt;/g' \
+                echo "$WARNUNGS_TEXTE" | sed 's/^</\&lt;/g' | sed 's/^>/\&gt;/g' \
                   | while IFS= read -r ZEILE; do
                     if [ "$ERSTE_ZEILE" = "1" ]; then
                       echo "| \`$DATEI\` | ⚠️ $ZEILE |" >> $GITHUB_STEP_SUMMARY
@@ -301,3 +300,25 @@ jobs:
             --lang de-DE \
             --summary || true
           # || true: Verstösse sind Warnungen, kein exit 1
+
+      # ----------------------------------------------------------
+      # 9. Link-Prüfung
+      #    Prüft externe Links (http/https) in den DITA-Dateien.
+      #    Defekte Links sind Warnungen und blockieren den Merge nicht.
+      # ----------------------------------------------------------
+      - name: Link-Prüfung
+        if: steps.dita_dateien.outputs.dateien != ''
+        run: |
+          DITA_DATEIEN=$(echo "${{ steps.dita_dateien.outputs.dateien }}" \
+            | tr ' ' '\n' | grep '\.dita$' | tr '\n' ' ')
+
+          if [ -z "$DITA_DATEIEN" ]; then
+            echo "Keine DITA-Dateien zu prüfen."
+            exit 0
+          fi
+
+          python3 shared/scripts/check_links.py \
+            --dita $DITA_DATEIEN \
+            --timeout 10 \
+            --summary || true
+          # || true: Warnungen blockieren den Merge nicht
