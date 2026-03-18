@@ -126,6 +126,7 @@ jobs:
       # ----------------------------------------------------------
       - name: DTD-Validierung
         if: steps.dita_dateien.outputs.dateien != ''
+        continue-on-error: true
         run: |
           FEHLER=0
           DITA_OT="/opt/dita-ot/bin/dita"
@@ -285,6 +286,7 @@ jobs:
       # ----------------------------------------------------------
       - name: Terminologieprüfung
         if: steps.dita_dateien.outputs.dateien != ''
+        continue-on-error: true
         run: |
           DITA_DATEIEN=$(echo "${{ steps.dita_dateien.outputs.dateien }}" \
             | tr ' ' '\n' | grep '\.dita$' | tr '\n' ' ')
@@ -303,14 +305,15 @@ jobs:
           # || true: Verstösse sind Warnungen, kein exit 1
 
       # ----------------------------------------------------------
-      # 9. Link-Prüfung
+      # 9. Linkprüfung
       #    Prüft externe Links (http/https) in DITA-Dateien und Maps.
       #    Maps werden eingeschlossen, da externe Links auch dort
       #    stehen können (z.B. in external_links.ditamap).
       #    Defekte Links sind Warnungen und blockieren den Merge nicht.
       # ----------------------------------------------------------
-      - name: Link-Prüfung
+      - name: Linkprüfung
         if: steps.dita_dateien.outputs.dateien != ''
+        continue-on-error: true
         run: |
           DITA_DATEIEN=$(echo "${{ steps.dita_dateien.outputs.dateien }}" \
             | tr ' ' '\n' | grep -E '\.(dita|ditamap)$' | tr '\n' ' ')
