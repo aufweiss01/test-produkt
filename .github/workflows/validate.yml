@@ -46,6 +46,7 @@ jobs:
         with:
           submodules: true
           token: ${{ secrets.SUBMODULE_PAT }}
+          fetch-depth: 0
 
       # ----------------------------------------------------------
       # 2. Java einrichten (für Saxon)
