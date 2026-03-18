@@ -100,7 +100,7 @@ jobs:
               origin/${{ github.base_ref }}...HEAD \
               -- '*.dita' '*.ditamap' | tr '\n' ' ')
           else
-            git fetch origin develop --depth=50 2>/dev/null || true
+            git fetch origin develop 2>/dev/null || true
             BASE=$(git merge-base HEAD origin/develop 2>/dev/null || echo "")
 
             if [ -n "$BASE" ]; then
@@ -303,14 +303,16 @@ jobs:
 
       # ----------------------------------------------------------
       # 9. Link-Prüfung
-      #    Prüft externe Links (http/https) in den DITA-Dateien.
+      #    Prüft externe Links (http/https) in DITA-Dateien und Maps.
+      #    Maps werden eingeschlossen, da externe Links auch dort
+      #    stehen können (z.B. in external_links.ditamap).
       #    Defekte Links sind Warnungen und blockieren den Merge nicht.
       # ----------------------------------------------------------
       - name: Link-Prüfung
         if: steps.dita_dateien.outputs.dateien != ''
         run: |
           DITA_DATEIEN=$(echo "${{ steps.dita_dateien.outputs.dateien }}" \
-            | tr ' ' '\n' | grep '\.dita$' | tr '\n' ' ')
+            | tr ' ' '\n' | grep -E '\.(dita|ditamap)$' | tr '\n' ' ')
 
           if [ -z "$DITA_DATEIEN" ]; then
             echo "Keine DITA-Dateien zu prüfen."
